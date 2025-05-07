@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyMate - Sign Up</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-base-200">
+    <div class="hero min-h-screen">
+        <div class="hero-content flex-col lg:flex-row-reverse">
+            <div class="text-center lg:text-left lg:ml-8">
+                <h1 class="text-5xl font-bold">Join StudyMate</h1>
+                <p class="py-6">Create your account and start your journey to better learning.</p>
+            </div>
+            <div class="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+                <div class="card-body">
+                    <h2 class="card-title justify-center mb-4">Create Account</h2>
+                    <form id="signupForm" class="space-y-4">
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Full Name</span>
+                            </label>
+                            <input type="text" id="name" placeholder="Enter your full name" class="input input-bordered" required />
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Email</span>
+                            </label>
+                            <input type="email" id="email" placeholder="Enter your email" class="input input-bordered" required />
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Password</span>
+                            </label>
+                            <input type="password" id="password" placeholder="Create a password" class="input input-bordered" required />
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Confirm Password</span>
+                            </label>
+                            <input type="password" id="confirmPassword" placeholder="Confirm your password" class="input input-bordered" required />
+                        </div>
+                        <div class="form-control mt-6">
+                            <button type="submit" class="btn btn-primary">Sign Up</button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-4">
+                        <p>Already have an account? <a href="login.html" class="link link-primary">Login</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            // Get existing users
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            
+            // Check if email already exists
+            if (users.some(user => user.email === email)) {
+                alert('Email already registered!');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                name,
+                email,
+                password,
+                createdAt: new Date().toISOString()
+            };
+            
+            // Add to users array
+            users.push(newUser);
+            
+            // Save to localStorage
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            // Store as current user
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            
+            // Redirect to index
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html> 

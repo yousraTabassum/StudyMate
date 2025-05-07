@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyMate - Upload Documents</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- PDF.js for PDF processing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body class="min-h-screen bg-base-200">
+    <!-- Navigation -->
+    <div class="navbar bg-base-100 shadow-lg">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <label tabindex="0" class="btn btn-ghost lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+                    </svg>
+                </label>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a href="library.html">Library</a></li>
+                    <li><a href="upload.html">Upload</a></li>
+                    <li><a href="quiz.html">Quizzes</a></li>
+                    <li><a href="progress.html">Progress</a></li>
+                    <li><a href="routine.html">Study Routine</a></li>
+                    <li><a href="notes.html">My Notes</a></li>
+                </ul>
+            </div>
+            <a href="index.html" class="btn btn-ghost normal-case text-xl">StudyMate</a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal px-1">
+                <li><a href="library.html">Library</a></li>
+                <li><a href="upload.html">Upload</a></li>
+                <li><a href="quiz.html">Quizzes</a></li>
+                <li><a href="progress.html">Progress</a></li>
+                <li><a href="routine.html">Study Routine</a></li>
+                <li><a href="notes.html">My Notes</a></li>
+            </ul>
+        </div>
+        <div class="navbar-end">
+            <a href="profile.html" class="btn btn-ghost">Profile</a>
+            <button onclick="logout()" class="btn btn-ghost">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold mb-8">Upload Documents</h1>
+
+            <!-- Upload Section -->
+            <div class="card bg-base-100 shadow-xl mb-8">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Upload PDF Document</h2>
+                    <div class="form-control w-full">
+                        <input type="file" id="pdfFile" accept=".pdf" class="file-input file-input-bordered w-full" />
+                        <label class="label">
+                            <span class="label-text-alt">Supported format: PDF</span>
+                        </label>
+                    </div>
+                    <div class="mt-4">
+                        <button onclick="processPDF()" class="btn btn-primary w-full">Process Document</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Processing Status -->
+            <div id="processingStatus" class="hidden">
+                <div class="alert alert-info">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>Processing your document...</span>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div id="summarySection" class="hidden">
+                <div class="card bg-base-100 shadow-xl mb-8">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4">Document Summary</h2>
+                        <div id="summaryContent" class="prose max-w-none"></div>
+                        <div class="mt-4 flex gap-4">
+                            <button onclick="downloadSummary()" class="btn btn-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                                Download Summary
+                            </button>
+                            <button onclick="generateQuiz()" class="btn btn-secondary">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+                                </svg>
+                                Generate Quiz
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Section -->
+            <div id="quizSection" class="hidden">
+                <div class="card bg-base-100 shadow-xl mb-8">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4">Quiz from Document</h2>
+                        <div id="quizContent" class="space-y-6">
+                            <!-- Quiz questions will be populated here -->
+                        </div>
+                        <div class="mt-6">
+                            <button onclick="submitQuiz()" class="btn btn-primary w-full">Submit Quiz</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Uploads -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Recent Uploads</h2>
+                    <div class="overflow-x-auto">
+                        <table class="table w-full">
+                            <thead>
+                                <tr>
+                                    <th>Document Name</th>
+                                    <th>Upload Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentUploads">
+                                <!-- Recent uploads will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-10 bg-base-200 text-base-content rounded mt-8">
+        <div>
+            <p>Copyright © 2024 - All rights reserved by StudyMate</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // Check if user is logged in
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+
+        // Store the current document text for quiz generation
+        let currentDocumentText = '';
+
+        // Process PDF file
+        async function processPDF() {
+            const fileInput = document.getElementById('pdfFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select a PDF file first.');
+                return;
+            }
+
+            // Show processing status
+            document.getElementById('processingStatus').classList.remove('hidden');
+            document.getElementById('summarySection').classList.add('hidden');
+            document.getElementById('quizSection').classList.add('hidden');
+
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                
+                let fullText = '';
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(' ');
+                    fullText += pageText + '\n';
+                }
+
+                // Store the full text for quiz generation
+                currentDocumentText = fullText;
+
+                // Generate summary (simple version - first 3 sentences)
+                const sentences = fullText.match(/[^.!?]+[.!?]+/g) || [];
+                const summary = sentences.slice(0, 3).join(' ');
+
+                // Display summary
+                document.getElementById('summaryContent').textContent = summary;
+                document.getElementById('summarySection').classList.remove('hidden');
+
+                // Save to recent uploads
+                saveToRecentUploads(file.name);
+
+            } catch (error) {
+                console.error('Error processing PDF:', error);
+                alert('Error processing the PDF file. Please try again.');
+            } finally {
+                document.getElementById('processingStatus').classList.add('hidden');
+            }
+        }
+
+        // Generate quiz from document
+        function generateQuiz() {
+            const sentences = currentDocumentText.match(/[^.!?]+[.!?]+/g) || [];
+            const quizContent = document.getElementById('quizContent');
+            quizContent.innerHTML = '';
+
+            // Generate 5 questions
+            for (let i = 0; i < 5; i++) {
+                const randomIndex = Math.floor(Math.random() * sentences.length);
+                const sentence = sentences[randomIndex].trim();
+                
+                // Create a question from the sentence
+                const question = sentence.replace(/^[^a-z]+/i, '').replace(/[.!?]+$/, '?');
+                
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'card bg-base-200 p-4';
+                questionDiv.innerHTML = `
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Question ${i + 1}: ${question}</span>
+                        </label>
+                        <textarea class="textarea textarea-bordered h-24" placeholder="Your answer..." data-question="${i}"></textarea>
+                    </div>
+                `;
+                quizContent.appendChild(questionDiv);
+            }
+
+            document.getElementById('quizSection').classList.remove('hidden');
+        }
+
+        // Submit quiz
+        function submitQuiz() {
+            const answers = [];
+            const textareas = document.querySelectorAll('#quizContent textarea');
+            
+            textareas.forEach((textarea, index) => {
+                answers.push({
+                    question: textarea.parentElement.querySelector('.label-text').textContent,
+                    answer: textarea.value.trim()
+                });
+            });
+
+            // Save quiz results
+            const quizResults = JSON.parse(localStorage.getItem('quizResults')) || [];
+            quizResults.push({
+                documentName: document.getElementById('pdfFile').files[0].name,
+                date: new Date().toISOString(),
+                answers: answers,
+                score: calculateScore(answers) // You can implement a scoring system
+            });
+
+            localStorage.setItem('quizResults', JSON.stringify(quizResults));
+
+            // Show success message
+            alert('Quiz submitted successfully! Check your progress page for results.');
+            
+            // Hide quiz section
+            document.getElementById('quizSection').classList.add('hidden');
+        }
+
+        // Calculate quiz score (simple version)
+        function calculateScore(answers) {
+            // This is a placeholder for a more sophisticated scoring system
+            // You could implement AI-based answer checking or keyword matching
+            return Math.floor(Math.random() * 100); // Random score for demonstration
+        }
+
+        // Download summary as PDF
+        function downloadSummary() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const summary = document.getElementById('summaryContent').textContent;
+            const fileName = document.getElementById('pdfFile').files[0].name.replace('.pdf', '_summary.pdf');
+
+            doc.setFontSize(12);
+            doc.text('Document Summary', 20, 20);
+            doc.setFontSize(10);
+            
+            const splitText = doc.splitTextToSize(summary, 170);
+            doc.text(splitText, 20, 30);
+
+            doc.save(fileName);
+        }
+
+        // Save to recent uploads
+        function saveToRecentUploads(fileName) {
+            const uploads = JSON.parse(localStorage.getItem(`uploads_${currentUser.email}`)) || [];
+            uploads.unshift({
+                name: fileName,
+                date: new Date().toISOString()
+            });
+            
+            // Keep only last 5 uploads
+            if (uploads.length > 5) {
+                uploads.pop();
+            }
+            
+            localStorage.setItem(`uploads_${currentUser.email}`, JSON.stringify(uploads));
+            updateRecentUploadsTable();
+        }
+
+        // Update recent uploads table
+        function updateRecentUploadsTable() {
+            const uploads = JSON.parse(localStorage.getItem(`uploads_${currentUser.email}`)) || [];
+            const tbody = document.getElementById('recentUploads');
+            tbody.innerHTML = '';
+
+            uploads.forEach(upload => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${upload.name}</td>
+                    <td>${new Date(upload.date).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-ghost btn-sm" onclick="downloadSummary()">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                            Download
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Initialize the page
+        updateRecentUploadsTable();
+    </script>
+</body>
+</html> 

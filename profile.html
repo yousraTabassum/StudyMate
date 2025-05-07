@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyMate - Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-base-200">
+    <!-- Navigation -->
+    <div class="navbar bg-base-100 shadow-lg">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <label tabindex="0" class="btn btn-ghost lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+                    </svg>
+                </label>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a href="library.html">Library</a></li>
+                    <li><a href="upload.html">Upload</a></li>
+                    <li><a href="quiz.html">Quizzes</a></li>
+                    <li><a href="progress.html">Progress</a></li>
+                    <li><a href="routine.html">Study Routine</a></li>
+                    <li><a href="notes.html">My Notes</a></li>
+                </ul>
+            </div>
+            <a href="index.html" class="btn btn-ghost normal-case text-xl">StudyMate</a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal px-1">
+                <li><a href="library.html">Library</a></li>
+                <li><a href="upload.html">Upload</a></li>
+                <li><a href="quiz.html">Quizzes</a></li>
+                <li><a href="progress.html">Progress</a></li>
+                <li><a href="routine.html">Study Routine</a></li>
+                <li><a href="notes.html">My Notes</a></li>
+            </ul>
+        </div>
+        <div class="navbar-end">
+            <a href="profile.html" class="btn btn-ghost">Profile</a>
+            <button onclick="logout()" class="btn btn-ghost">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold mb-8">Profile Settings</h1>
+
+            <!-- Profile Overview -->
+            <div class="card bg-base-100 shadow-xl mb-8">
+                <div class="card-body">
+                    <div class="flex items-center gap-6">
+                        <div class="avatar placeholder">
+                            <div class="bg-neutral text-neutral-content rounded-full w-24">
+                                <span class="text-3xl" id="avatarInitials">JD</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold" id="userName">John Doe</h2>
+                            <p class="text-gray-500" id="userEmail">john@example.com</p>
+                            <p class="text-sm text-gray-500">Member since <span id="joinDate">January 2024</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Settings -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Personal Information -->
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4">Personal Information</h2>
+                        <form id="personalInfoForm" class="space-y-4">
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Full Name</span>
+                                </label>
+                                <input type="text" id="fullName" class="input input-bordered" required />
+                            </div>
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Email</span>
+                                </label>
+                                <input type="email" id="email" class="input input-bordered" required />
+                            </div>
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Education Level</span>
+                                </label>
+                                <select id="educationLevel" class="select select-bordered" required>
+                                    <option value="school">School</option>
+                                    <option value="college">College</option>
+                                    <option value="university">University</option>
+                                </select>
+                            </div>
+                            <div class="form-control mt-6">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Security Settings -->
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4">Security Settings</h2>
+                        <form id="passwordForm" class="space-y-4">
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Current Password</span>
+                                </label>
+                                <input type="password" id="currentPassword" class="input input-bordered" required />
+                            </div>
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">New Password</span>
+                                </label>
+                                <input type="password" id="newPassword" class="input input-bordered" required />
+                            </div>
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Confirm New Password</span>
+                                </label>
+                                <input type="password" id="confirmPassword" class="input input-bordered" required />
+                            </div>
+                            <div class="form-control mt-6">
+                                <button type="submit" class="btn btn-primary">Update Password</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Summary -->
+            <div class="card bg-base-100 shadow-xl mt-8">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Activity Summary</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="stat bg-base-200 rounded-lg">
+                            <div class="stat-title">Total Notes</div>
+                            <div class="stat-value" id="totalNotes">0</div>
+                        </div>
+                        <div class="stat bg-base-200 rounded-lg">
+                            <div class="stat-title">Quizzes Taken</div>
+                            <div class="stat-value" id="totalQuizzes">0</div>
+                        </div>
+                        <div class="stat bg-base-200 rounded-lg">
+                            <div class="stat-title">Average Score</div>
+                            <div class="stat-value" id="averageScore">0%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="card bg-base-100 shadow-xl mt-8">
+                <div class="card-body">
+                    <h2 class="card-title text-error mb-4">Danger Zone</h2>
+                    <p class="text-sm text-gray-500 mb-4">Once you delete your account, there is no going back. Please be certain.</p>
+                    <button onclick="deleteAccount()" class="btn btn-error">Delete Account</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-10 bg-base-200 text-base-content rounded mt-8">
+        <div>
+            <p>Copyright © 2024 - All rights reserved by StudyMate</p>
+        </div>
+    </footer>
+
+    <script>
+        // Check if user is logged in
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+
+        // Initialize profile data
+        function initializeProfile() {
+            // Set avatar initials
+            const name = currentUser.name || 'User';
+            const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+            document.getElementById('avatarInitials').textContent = initials;
+
+            // Set user information
+            document.getElementById('userName').textContent = name;
+            document.getElementById('userEmail').textContent = currentUser.email;
+            document.getElementById('joinDate').textContent = new Date(currentUser.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+            // Set form values
+            document.getElementById('fullName').value = name;
+            document.getElementById('email').value = currentUser.email;
+            document.getElementById('educationLevel').value = currentUser.educationLevel || 'school';
+
+            // Update activity summary
+            updateActivitySummary();
+        }
+
+        // Update activity summary
+        function updateActivitySummary() {
+            // Get notes count
+            const notes = JSON.parse(localStorage.getItem(`notes_${currentUser.email}`)) || [];
+            document.getElementById('totalNotes').textContent = notes.length;
+
+            // Get quiz results
+            const quizResults = JSON.parse(localStorage.getItem('quizResults')) || [];
+            document.getElementById('totalQuizzes').textContent = quizResults.length;
+
+            // Calculate average score
+            const averageScore = quizResults.length > 0
+                ? quizResults.reduce((sum, result) => sum + result.percentage, 0) / quizResults.length
+                : 0;
+            document.getElementById('averageScore').textContent = `${averageScore.toFixed(1)}%`;
+        }
+
+        // Handle personal information form submission
+        document.getElementById('personalInfoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const educationLevel = document.getElementById('educationLevel').value;
+
+            // Update user data
+            currentUser.name = fullName;
+            currentUser.email = email;
+            currentUser.educationLevel = educationLevel;
+
+            // Save to localStorage
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+            // Update display
+            initializeProfile();
+            alert('Personal information updated successfully!');
+        });
+
+        // Handle password form submission
+        document.getElementById('passwordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Validate current password
+            if (currentPassword !== currentUser.password) {
+                alert('Current password is incorrect!');
+                return;
+            }
+
+            // Validate new password
+            if (newPassword !== confirmPassword) {
+                alert('New passwords do not match!');
+                return;
+            }
+
+            // Update password
+            currentUser.password = newPassword;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+            // Clear form
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+
+            alert('Password updated successfully!');
+        });
+
+        // Delete account
+        function deleteAccount() {
+            if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                // Remove user data
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem(`notes_${currentUser.email}`);
+                localStorage.removeItem('quizResults');
+
+                // Redirect to login
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Initialize the page
+        initializeProfile();
+    </script>
+</body>
+</html> 

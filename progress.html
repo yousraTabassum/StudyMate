@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyMate - Progress</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for progress visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="min-h-screen bg-base-200">
+    <!-- Navigation -->
+    <div class="navbar bg-base-100 shadow-lg">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <label tabindex="0" class="btn btn-ghost lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+                    </svg>
+                </label>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a href="library.html">Library</a></li>
+                    <li><a href="upload.html">Upload</a></li>
+                    <li><a href="quiz.html">Quizzes</a></li>
+                    <li><a href="progress.html">Progress</a></li>
+                    <li><a href="routine.html">Study Routine</a></li>
+                    <li><a href="notes.html">My Notes</a></li>
+                </ul>
+            </div>
+            <a href="index.html" class="btn btn-ghost normal-case text-xl">StudyMate</a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal px-1">
+                <li><a href="library.html">Library</a></li>
+                <li><a href="upload.html">Upload</a></li>
+                <li><a href="quiz.html">Quizzes</a></li>
+                <li><a href="progress.html">Progress</a></li>
+                <li><a href="routine.html">Study Routine</a></li>
+                <li><a href="notes.html">My Notes</a></li>
+            </ul>
+        </div>
+        <div class="navbar-end">
+            <a href="profile.html" class="btn btn-ghost">Profile</a>
+            <button onclick="logout()" class="btn btn-ghost">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-6xl mx-auto">
+            <h1 class="text-3xl font-bold mb-8">Learning Progress</h1>
+
+            <!-- Progress Overview -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="stat bg-base-100 shadow-xl rounded-box">
+                    <div class="stat-figure text-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                    </div>
+                    <div class="stat-title">Documents Studied</div>
+                    <div class="stat-value" id="totalDocuments">0</div>
+                </div>
+                <div class="stat bg-base-100 shadow-xl rounded-box">
+                    <div class="stat-figure text-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                    </div>
+                    <div class="stat-title">Quizzes Taken</div>
+                    <div class="stat-value" id="totalQuizzes">0</div>
+                </div>
+                <div class="stat bg-base-100 shadow-xl rounded-box">
+                    <div class="stat-figure text-accent">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                    </div>
+                    <div class="stat-title">Average Score</div>
+                    <div class="stat-value" id="averageScore">0%</div>
+                </div>
+            </div>
+
+            <!-- Progress Chart -->
+            <div class="card bg-base-100 shadow-xl mb-8">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Progress Over Time</h2>
+                    <div class="h-80">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Quiz Results -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Recent Quiz Results</h2>
+                    <div class="overflow-x-auto">
+                        <table class="table w-full">
+                            <thead>
+                                <tr>
+                                    <th>Document</th>
+                                    <th>Date</th>
+                                    <th>Score</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="quizResults">
+                                <!-- Quiz results will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-10 bg-base-200 text-base-content rounded mt-8">
+        <div>
+            <p>Copyright © 2024 - All rights reserved by StudyMate</p>
+        </div>
+    </footer>
+
+    <script>
+        // Check if user is logged in
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+
+        // Initialize progress data
+        function initializeProgress() {
+            const quizResults = JSON.parse(localStorage.getItem('quizResults')) || [];
+            const uploads = JSON.parse(localStorage.getItem(`uploads_${currentUser.email}`)) || [];
+
+            // Update statistics
+            document.getElementById('totalDocuments').textContent = uploads.length;
+            document.getElementById('totalQuizzes').textContent = quizResults.length;
+
+            // Calculate average score
+            const averageScore = quizResults.length > 0
+                ? quizResults.reduce((sum, result) => sum + result.score, 0) / quizResults.length
+                : 0;
+            document.getElementById('averageScore').textContent = `${averageScore.toFixed(1)}%`;
+
+            // Update quiz results table
+            updateQuizResultsTable(quizResults);
+
+            // Initialize progress chart
+            initializeProgressChart(quizResults);
+        }
+
+        // Update quiz results table
+        function updateQuizResultsTable(quizResults) {
+            const tbody = document.getElementById('quizResults');
+            tbody.innerHTML = '';
+
+            quizResults.slice().reverse().forEach(result => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${result.documentName}</td>
+                    <td>${new Date(result.date).toLocaleDateString()}</td>
+                    <td>${result.score}%</td>
+                    <td>
+                        <button class="btn btn-ghost btn-sm" onclick="viewQuizDetails('${result.date}')">
+                            View Details
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Initialize progress chart
+        function initializeProgressChart(quizResults) {
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            
+            // Sort results by date
+            const sortedResults = quizResults.sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: sortedResults.map(result => new Date(result.date).toLocaleDateString()),
+                    datasets: [{
+                        label: 'Quiz Scores',
+                        data: sortedResults.map(result => result.score),
+                        borderColor: 'rgb(99, 102, 241)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        // View quiz details
+        function viewQuizDetails(date) {
+            const quizResults = JSON.parse(localStorage.getItem('quizResults')) || [];
+            const result = quizResults.find(r => r.date === date);
+            
+            if (result) {
+                let details = `Document: ${result.documentName}\n\n`;
+                result.answers.forEach((answer, index) => {
+                    details += `Question ${index + 1}: ${answer.question}\n`;
+                    details += `Your Answer: ${answer.answer}\n\n`;
+                });
+                alert(details);
+            }
+        }
+
+        // Initialize the page
+        initializeProgress();
+    </script>
+</body>
+</html> 

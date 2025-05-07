@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyMate - Library</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body class="min-h-screen bg-base-200">
+    <!-- Navigation -->
+    <div class="navbar bg-base-100 shadow-lg">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <label tabindex="0" class="btn btn-ghost lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+                    </svg>
+                </label>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a href="library.html">Library</a></li>
+                    <li><a href="upload.html">Upload</a></li>
+                    <li><a href="quiz.html">Quizzes</a></li>
+                    <li><a href="progress.html">Progress</a></li>
+                    <li><a href="routine.html">Study Routine</a></li>
+                    <li><a href="notes.html">My Notes</a></li>
+                </ul>
+            </div>
+            <a href="index.html" class="btn btn-ghost normal-case text-xl">StudyMate</a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal px-1">
+                <li><a href="library.html">Library</a></li>
+                <li><a href="upload.html">Upload</a></li>
+                <li><a href="quiz.html">Quizzes</a></li>
+                <li><a href="progress.html">Progress</a></li>
+                <li><a href="routine.html">Study Routine</a></li>
+                <li><a href="notes.html">My Notes</a></li>
+            </ul>
+        </div>
+        <div class="navbar-end">
+            <a href="profile.html" class="btn btn-ghost">Profile</a>
+            <button onclick="logout()" class="btn btn-ghost">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Top Recommended Section -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Top Recommended</h2>
+            <div class="carousel carousel-center max-w-full p-4 space-x-4 bg-base-100 rounded-box">
+                <div class="carousel-item">
+                    <div class="card w-96 bg-base-100 shadow-xl">
+                        <figure><img src="Physics1.png" alt="Physics Book" /></figure>
+                        <div class="card-body">
+                            <h2 class="card-title">Physics for High School</h2>
+                            <p>Comprehensive guide for high school physics students</p>
+                            <div class="card-actions justify-end">
+                                <button class="btn btn-primary" onclick="previewBook('physics-high-school')">Preview</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="card w-96 bg-base-100 shadow-xl">
+                        <figure><img src="chemistry.jpg" alt="Chemistry Book" /></figure>
+                        <div class="card-body">
+                            <h2 class="card-title">Chemistry Fundamentals</h2>
+                            <p>Essential chemistry concepts for college students</p>
+                            <div class="card-actions justify-end">
+                                <button class="btn btn-primary" onclick="previewBook('chemistry-fundamentals')">Preview</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="card w-96 bg-base-100 shadow-xl">
+                        <figure><img src="math.jpg " alt="Math Book" /></figure>
+                        <div class="card-body">
+                            <h2 class="card-title">Advanced Mathematics</h2>
+                            <p>University-level mathematics textbook</p>
+                            <div class="card-actions justify-end">
+                                <button class="btn btn-primary" onclick="previewBook('advanced-math')">Preview</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="bg-base-100 p-6 rounded-box shadow-xl mb-8">
+            <div class="flex flex-col md:flex-row gap-4">
+                <!-- Search Bar -->
+                <div class="form-control flex-1">
+                    <div class="input-group">
+                        <input type="text" placeholder="Search books..." class="input input-bordered w-full" id="searchInput" />
+                        <button class="btn btn-square">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="flex flex-wrap gap-2">
+                    <select class="select select-bordered" id="educationLevel">
+                        <option value="">Education Level</option>
+                        <option value="school">School</option>
+                        <option value="college">College</option>
+                        <option value="university">University</option>
+                    </select>
+                    <select class="select select-bordered" id="subject">
+                        <option value="">Subject</option>
+                        <option value="physics">Physics</option>
+                        <option value="chemistry">Chemistry</option>
+                        <option value="math">Mathematics</option>
+                        <option value="biology">Biology</option>
+                    </select>
+                    <select class="select select-bordered" id="difficulty">
+                        <option value="">Difficulty</option>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Books Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="booksGrid">
+            <!-- Book cards will be dynamically added here -->
+        </div>
+    </div>
+
+    <!-- Book Preview Modal -->
+    <dialog id="bookPreviewModal" class="modal">
+        <div class="modal-box w-11/12 max-w-5xl">
+            <div class="flex flex-col md:flex-row gap-6">
+                <div class="md:w-1/3">
+                    <img src="https://placehold.co/400x600" alt="Book Cover" class="rounded-lg shadow-lg" id="modalBookCover" />
+                </div>
+                <div class="md:w-2/3">
+                    <h3 class="font-bold text-2xl mb-2" id="modalBookTitle"></h3>
+                    <p class="text-sm text-gray-500 mb-4" id="modalBookAuthor"></p>
+                    <div class="flex flex-wrap gap-2 mb-4" id="modalBookTags"></div>
+                    <p class="mb-6" id="modalBookDescription"></p>
+                    <div class="flex flex-wrap gap-4">
+                        <button class="btn btn-primary" onclick="readBook()">
+                            <i class="fas fa-book-open mr-2"></i>
+                            Read Online
+                        </button>
+                        <button class="btn btn-secondary" onclick="downloadBook()">
+                            <i class="fas fa-download mr-2"></i>
+                            Download PDF
+                        </button>
+                        <button class="btn btn-ghost" onclick="toggleFavorite()">
+                            <i class="far fa-heart mr-2"></i>
+                            Add to Favorites
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-action">
+                <form method="dialog">
+                    <button class="btn">Close</button>
+                </form>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-10 bg-base-200 text-base-content rounded mt-8">
+        <div>
+            <p>Copyright © 2024 - All rights reserved by StudyMate</p>
+        </div>
+    </footer>
+
+    <script>
+        // Check if user is logged in
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+
+        // Sample book data
+        const books = [
+            {
+                id: 'physics-high-school',
+                title: 'Introduction Physics  (third edition)',
+                author: 'John D.Mays',
+                cover: 'Intro-Physics-3d.png',
+                description: 'A comprehensive guide to high school physics covering mechanics, thermodynamics, and electromagnetism.',
+                tags: ['High School', 'Physics', 'Beginner'],
+                educationLevel: 'school',
+                subject: 'physics',
+                difficulty: 'beginner'
+            },
+            {
+                id: 'chemistry-fundamentals',
+                title: 'HMH Modern Chemistry: Student Edition 2017',
+                author: 'Houghton Mifflin Harcourt HC',
+                cover: 'chemistry book.jpg',
+                description: 'Essential chemistry concepts for college students with practical examples and exercises.',
+                tags: ['College', 'Chemistry', 'Intermediate'],
+                educationLevel: 'college',
+                subject: 'chemistry',
+                difficulty: 'intermediate'
+            },
+            {
+                id: 'advanced-math',
+                title: 'Mathematics Problem-Solving Challenges For Secondary School Students And Beyond (Problem Solving in Mathematics and Beyond)',
+                author: 'David L Linker, Alan Sultan',
+                cover: 'math book.jpg',
+                description: 'University-level mathematics covering calculus, linear algebra, and differential equations.',
+                tags: ['University', 'Mathematics', 'Advanced'],
+                educationLevel: 'university',
+                subject: 'math',
+                difficulty: 'advanced'
+            }
+        ];
+
+        // Initialize the library
+        function initializeLibrary() {
+            displayBooks(books);
+            setupEventListeners();
+        }
+
+        // Display books in the grid
+        function displayBooks(booksToShow) {
+            const grid = document.getElementById('booksGrid');
+            grid.innerHTML = '';
+
+            booksToShow.forEach(book => {
+                const card = createBookCard(book);
+                grid.appendChild(card);
+            });
+        }
+
+        // Create a book card
+        function createBookCard(book) {
+            const div = document.createElement('div');
+            div.className = 'card bg-base-100 shadow-xl';
+            div.innerHTML = `
+                <figure><img src="${book.cover}" alt="${book.title}" /></figure>
+                <div class="card-body">
+                    <h2 class="card-title">
+                        ${book.title}
+                        <button class="btn btn-ghost btn-sm" onclick="toggleFavorite('${book.id}')">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </h2>
+                    <p class="text-sm text-gray-500">${book.author}</p>
+                    <div class="flex flex-wrap gap-2 my-2">
+                        ${book.tags.map(tag => `<span class="badge badge-outline">${tag}</span>`).join('')}
+                    </div>
+                    <div class="card-actions justify-end">
+                        <button class="btn btn-primary" onclick="previewBook('${book.id}')">Preview</button>
+                    </div>
+                </div>
+            `;
+            return div;
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Search input
+            document.getElementById('searchInput').addEventListener('input', filterBooks);
+            
+            // Filter selects
+            document.getElementById('educationLevel').addEventListener('change', filterBooks);
+            document.getElementById('subject').addEventListener('change', filterBooks);
+            document.getElementById('difficulty').addEventListener('change', filterBooks);
+        }
+
+        // Filter books based on search and filters
+        function filterBooks() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const educationLevel = document.getElementById('educationLevel').value;
+            const subject = document.getElementById('subject').value;
+            const difficulty = document.getElementById('difficulty').value;
+
+            const filteredBooks = books.filter(book => {
+                const matchesSearch = book.title.toLowerCase().includes(searchTerm) ||
+                                    book.author.toLowerCase().includes(searchTerm) ||
+                                    book.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+                
+                const matchesEducation = !educationLevel || book.educationLevel === educationLevel;
+                const matchesSubject = !subject || book.subject === subject;
+                const matchesDifficulty = !difficulty || book.difficulty === difficulty;
+
+                return matchesSearch && matchesEducation && matchesSubject && matchesDifficulty;
+            });
+
+            displayBooks(filteredBooks);
+        }
+
+        // Preview book
+        function previewBook(bookId) {
+            const book = books.find(b => b.id === bookId);
+            if (!book) return;
+
+            document.getElementById('modalBookCover').src = book.cover;
+            document.getElementById('modalBookTitle').textContent = book.title;
+            document.getElementById('modalBookAuthor').textContent = book.author;
+            document.getElementById('modalBookDescription').textContent = book.description;
+            
+            const tagsContainer = document.getElementById('modalBookTags');
+            tagsContainer.innerHTML = book.tags.map(tag => 
+                `<span class="badge badge-outline">${tag}</span>`
+            ).join('');
+
+            document.getElementById('bookPreviewModal').showModal();
+        }
+
+        // Toggle favorite
+        function toggleFavorite(bookId) {
+            const favorites = JSON.parse(localStorage.getItem(`favorites_${currentUser.email}`)) || [];
+            const index = favorites.indexOf(bookId);
+            
+            if (index === -1) {
+                favorites.push(bookId);
+            } else {
+                favorites.splice(index, 1);
+            }
+            
+            localStorage.setItem(`favorites_${currentUser.email}`, JSON.stringify(favorites));
+            updateFavoriteButtons();
+        }
+
+        // Update favorite buttons
+        function updateFavoriteButtons() {
+            const favorites = JSON.parse(localStorage.getItem(`favorites_${currentUser.email}`)) || [];
+            document.querySelectorAll('.fa-heart').forEach(icon => {
+                const bookId = icon.closest('button').getAttribute('onclick').match(/'([^']+)'/)[1];
+                icon.className = favorites.includes(bookId) ? 'fas fa-heart' : 'far fa-heart';
+            });
+        }
+
+        // Read book online
+        function readBook() {
+            // Implement online reading functionality
+            alert('Online reading feature coming soon!');
+        }
+
+        // Download book
+        function downloadBook() {
+            // Implement download functionality
+            alert('Download feature coming soon!');
+        }
+
+        // Initialize the page
+        initializeLibrary();
+    </script>
+</body>
+</html> 

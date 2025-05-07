@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyMate - Quizzes</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body class="min-h-screen bg-base-200">
+    <!-- Navigation -->
+    <div class="navbar bg-base-100 shadow-lg">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <label tabindex="0" class="btn btn-ghost lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+                    </svg>
+                </label>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a href="library.html">Library</a></li>
+                    <li><a href="upload.html">Upload</a></li>
+                    <li><a href="quiz.html">Quizzes</a></li>
+                    <li><a href="progress.html">Progress</a></li>
+                    <li><a href="routine.html">Study Routine</a></li>
+                    <li><a href="notes.html">My Notes</a></li>
+                </ul>
+            </div>
+            <a href="index.html" class="btn btn-ghost normal-case text-xl">StudyMate</a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal px-1">
+                <li><a href="library.html">Library</a></li>
+                <li><a href="upload.html">Upload</a></li>
+                <li><a href="quiz.html">Quizzes</a></li>
+                <li><a href="progress.html">Progress</a></li>
+                <li><a href="routine.html">Study Routine</a></li>
+                <li><a href="notes.html">My Notes</a></li>
+            </ul>
+        </div>
+        <div class="navbar-end">
+            <a href="profile.html" class="btn btn-ghost">Profile</a>
+            <button onclick="logout()" class="btn btn-ghost">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold mb-8">Quizzes</h1>
+
+            <!-- Quiz Selection -->
+            <div class="card bg-base-100 shadow-xl mb-8">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Select a Quiz</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="quizList">
+                        <!-- Quiz cards will be added here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Quiz Section -->
+            <div id="activeQuizSection" class="hidden">
+                <div class="card bg-base-100 shadow-xl mb-8">
+                    <div class="card-body">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="card-title" id="quizTitle">Quiz Title</h2>
+                            <div class="badge badge-primary" id="timer">Time: 30:00</div>
+                        </div>
+                        <div id="quizQuestions" class="space-y-6">
+                            <!-- Questions will be added here -->
+                        </div>
+                        <div class="mt-6">
+                            <button onclick="submitQuiz()" class="btn btn-primary w-full">Submit Quiz</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Results Section -->
+            <div id="quizResultsSection" class="hidden">
+                <div class="card bg-base-100 shadow-xl mb-8">
+                    <div class="card-body">
+                        <div class="text-center mb-6">
+                            <h2 class="text-2xl font-bold mb-2">Quiz Results</h2>
+                            <div class="stats shadow">
+                                <div class="stat">
+                                    <div class="stat-title">Score</div>
+                                    <div class="stat-value text-primary" id="quizScore">0%</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-title">Correct Answers</div>
+                                    <div class="stat-value text-secondary" id="correctAnswers">0/0</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-title">Time Taken</div>
+                                    <div class="stat-value text-accent" id="timeTaken">0:00</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="divider">Question Review</div>
+
+                        <div id="questionReview" class="space-y-6">
+                            <!-- Question reviews will be added here -->
+                        </div>
+
+                        <div class="mt-6 flex justify-center gap-4">
+                            <button onclick="retakeQuiz()" class="btn btn-primary">
+                                <i class="fas fa-redo mr-2"></i>
+                                Retake Quiz
+                            </button>
+                            <button onclick="backToQuizzes()" class="btn btn-ghost">
+                                <i class="fas fa-arrow-left mr-2"></i>
+                                Back to Quizzes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-10 bg-base-200 text-base-content rounded mt-8">
+        <div>
+            <p>Copyright © 2024 - All rights reserved by StudyMate</p>
+        </div>
+    </footer>
+
+    <script>
+        // Check if user is logged in
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+
+        // Sample quiz data
+        const quizzes = [
+            {
+                id: 'physics-quiz-1',
+                title: 'Physics Fundamentals Quiz',
+                description: 'Test your knowledge of basic physics concepts',
+                timeLimit: 30, // minutes
+                questions: [
+                    {
+                        question: 'What is Newton\'s First Law?',
+                        options: [
+                            'An object in motion stays in motion unless acted upon by an external force',
+                            'Force equals mass times acceleration',
+                            'For every action there is an equal and opposite reaction',
+                            'Energy cannot be created or destroyed'
+                        ],
+                        correctAnswer: 0,
+                        explanation: 'Newton\'s First Law, also known as the Law of Inertia, states that an object will remain at rest or in uniform motion unless acted upon by an external force.'
+                    },
+                    {
+                        question: 'What is the SI unit of force?',
+                        options: ['Joule', 'Newton', 'Pascal', 'Watt'],
+                        correctAnswer: 1,
+                        explanation: 'The Newton (N) is the SI unit of force, defined as the force needed to accelerate 1 kg at 1 m/s².'
+                    }
+                ]
+            },
+            {
+                id: 'chemistry-quiz-1',
+                title: 'Chemistry Basics Quiz',
+                description: 'Test your understanding of basic chemistry concepts',
+                timeLimit: 20,
+                questions: [
+                    {
+                        question: 'What is the chemical symbol for gold?',
+                        options: ['Ag', 'Au', 'Fe', 'Cu'],
+                        correctAnswer: 1,
+                        explanation: 'Au comes from the Latin word "aurum" meaning gold.'
+                    },
+                    {
+                        question: 'What is the pH of a neutral solution?',
+                        options: ['0', '7', '14', '10'],
+                        correctAnswer: 1,
+                        explanation: 'A pH of 7 indicates a neutral solution, with equal concentrations of H+ and OH- ions.'
+                    }
+                ]
+            }
+        ];
+
+        let currentQuiz = null;
+        let timerInterval = null;
+        let timeRemaining = 0;
+        let userAnswers = [];
+
+        // Initialize the page
+        function initializeQuizzes() {
+            displayQuizList();
+        }
+
+        // Display quiz list
+        function displayQuizList() {
+            const quizList = document.getElementById('quizList');
+            quizList.innerHTML = '';
+
+            quizzes.forEach(quiz => {
+                const card = document.createElement('div');
+                card.className = 'card bg-base-200';
+                card.innerHTML = `
+                    <div class="card-body">
+                        <h3 class="card-title">${quiz.title}</h3>
+                        <p>${quiz.description}</p>
+                        <div class="card-actions justify-end">
+                            <button class="btn btn-primary" onclick="startQuiz('${quiz.id}')">Start Quiz</button>
+                        </div>
+                    </div>
+                `;
+                quizList.appendChild(card);
+            });
+        }
+
+        // Start quiz
+        function startQuiz(quizId) {
+            currentQuiz = quizzes.find(q => q.id === quizId);
+            if (!currentQuiz) return;
+
+            // Reset state
+            userAnswers = [];
+            timeRemaining = currentQuiz.timeLimit * 60;
+            
+            // Show quiz section
+            document.getElementById('quizList').parentElement.parentElement.classList.add('hidden');
+            document.getElementById('activeQuizSection').classList.remove('hidden');
+            document.getElementById('quizResultsSection').classList.add('hidden');
+
+            // Set quiz title
+            document.getElementById('quizTitle').textContent = currentQuiz.title;
+
+            // Display questions
+            displayQuestions();
+
+            // Start timer
+            startTimer();
+        }
+
+        // Display questions
+        function displayQuestions() {
+            const container = document.getElementById('quizQuestions');
+            container.innerHTML = '';
+
+            currentQuiz.questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'card bg-base-200 p-4';
+                questionDiv.innerHTML = `
+                    <h3 class="font-bold mb-2">Question ${index + 1}: ${q.question}</h3>
+                    <div class="space-y-2">
+                        ${q.options.map((option, i) => `
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="q${index}" value="${i}" class="radio radio-primary" 
+                                    onchange="checkAnswer(${index}, ${i})" />
+                                <span>${option}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div id="answer-feedback-${index}" class="mt-3 hidden">
+                        <div class="alert alert-info">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <div>
+                                    <h3 class="font-bold">Correct Answer:</h3>
+                                    <div class="text-sm">${q.options[q.correctAnswer]}</div>
+                                    <div class="text-sm mt-1">${q.explanation}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+        }
+
+        // Check answer and show feedback
+        function checkAnswer(questionIndex, selectedAnswer) {
+            const feedbackDiv = document.getElementById(`answer-feedback-${questionIndex}`);
+            const question = currentQuiz.questions[questionIndex];
+            const isCorrect = selectedAnswer === question.correctAnswer;
+
+            // Show feedback
+            feedbackDiv.classList.remove('hidden');
+            
+            // Update feedback style based on correctness
+            if (isCorrect) {
+                feedbackDiv.querySelector('.alert').className = 'alert alert-success';
+            } else {
+                feedbackDiv.querySelector('.alert').className = 'alert alert-error';
+            }
+
+            // Store the answer
+            userAnswers[questionIndex] = selectedAnswer;
+        }
+
+        // Start timer
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        // Update timer display
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            document.getElementById('timer').textContent = 
+                `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Submit quiz
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            
+            // Calculate score
+            const correctCount = userAnswers.filter((answer, index) => 
+                answer === currentQuiz.questions[index].correctAnswer
+            ).length;
+            
+            const score = (correctCount / currentQuiz.questions.length) * 100;
+            const timeTaken = currentQuiz.timeLimit * 60 - timeRemaining;
+
+            // Display results
+            document.getElementById('quizScore').textContent = `${score.toFixed(1)}%`;
+            document.getElementById('correctAnswers').textContent = `${correctCount}/${currentQuiz.questions.length}`;
+            document.getElementById('timeTaken').textContent = 
+                `${Math.floor(timeTaken / 60)}:${(timeTaken % 60).toString().padStart(2, '0')}`;
+
+            // Display question review
+            displayQuestionReview();
+
+            // Show results section
+            document.getElementById('activeQuizSection').classList.add('hidden');
+            document.getElementById('quizResultsSection').classList.remove('hidden');
+
+            // Save results
+            saveQuizResults(score, correctCount, timeTaken);
+        }
+
+        // Display question review
+        function displayQuestionReview() {
+            const container = document.getElementById('questionReview');
+            container.innerHTML = '';
+
+            currentQuiz.questions.forEach((q, index) => {
+                const isCorrect = userAnswers[index] === q.correctAnswer;
+                const questionDiv = document.createElement('div');
+                questionDiv.className = `card ${isCorrect ? 'bg-success/10' : 'bg-error/10'} p-4`;
+                questionDiv.innerHTML = `
+                    <div class="flex items-start gap-4">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center ${
+                                isCorrect ? 'bg-success text-success-content' : 'bg-error text-error-content'
+                            }">
+                                <i class="fas ${isCorrect ? 'fa-check' : 'fa-times'}"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow">
+                            <h4 class="font-bold mb-2">Question ${index + 1}: ${q.question}</h4>
+                            <p class="text-sm mb-2">Your answer: ${q.options[userAnswers[index] || 'Not answered']}</p>
+                            <p class="text-sm mb-2">Correct answer: ${q.options[q.correctAnswer]}</p>
+                            <p class="text-sm text-gray-600">${q.explanation}</p>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+        }
+
+        // Save quiz results
+        function saveQuizResults(score, correctCount, timeTaken) {
+            const results = JSON.parse(localStorage.getItem('quizResults')) || [];
+            results.push({
+                quizId: currentQuiz.id,
+                quizTitle: currentQuiz.title,
+                date: new Date().toISOString(),
+                score: score,
+                correctAnswers: correctCount,
+                totalQuestions: currentQuiz.questions.length,
+                timeTaken: timeTaken
+            });
+            localStorage.setItem('quizResults', JSON.stringify(results));
+        }
+
+        // Retake quiz
+        function retakeQuiz() {
+            startQuiz(currentQuiz.id);
+        }
+
+        // Back to quizzes
+        function backToQuizzes() {
+            document.getElementById('quizResultsSection').classList.add('hidden');
+            document.getElementById('quizList').parentElement.parentElement.classList.remove('hidden');
+        }
+
+        // Initialize the page
+        initializeQuizzes();
+    </script>
+</body>
+</html> 
