@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyMate - My Tutorials</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-base-200">
+    <!-- Navigation -->
+    <div class="navbar bg-base-100 shadow-lg">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <label tabindex="0" class="btn btn-ghost lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+                    </svg>
+                </label>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a href="upload-tutorial.html">Upload Tutorial</a></li>
+                    <li><a href="teacher-dashboard.html">Dashboard</a></li>
+                    <li><a href="teacher-profile.html">Profile</a></li>
+                </ul>
+            </div>
+            <a href="index.html" class="btn btn-ghost normal-case text-xl">StudyMate</a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal px-1">
+                <li><a href="upload-tutorial.html">Upload Tutorial</a></li>
+                <li><a href="teacher-dashboard.html">Dashboard</a></li>
+                <li><a href="teacher-profile.html">Profile</a></li>
+            </ul>
+        </div>
+        <div class="navbar-end">
+            <button onclick="logout()" class="btn btn-ghost">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-6xl mx-auto">
+            <!-- Header -->
+            <div class="card bg-base-100 shadow-xl mb-8">
+                <div class="card-body">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h1 class="text-3xl font-bold mb-4">My Tutorials</h1>
+                            <p class="text-gray-600">Manage your tutorials and track their performance.</p>
+                        </div>
+                        <a href="upload-tutorial.html" class="btn btn-primary">Upload New Tutorial</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="card bg-base-100 shadow-xl mb-8">
+                <div class="card-body">
+                    <div class="flex flex-wrap gap-4">
+                        <div class="form-control flex-1">
+                            <input type="text" class="input input-bordered" id="searchInput" placeholder="Search tutorials..." />
+                        </div>
+                        <div class="form-control w-full md:w-48">
+                            <select class="select select-bordered" id="subjectFilter">
+                                <option value="">All Subjects</option>
+                                <option value="mathematics">Mathematics</option>
+                                <option value="science">Science</option>
+                                <option value="english">English</option>
+                                <option value="history">History</option>
+                                <option value="geography">Geography</option>
+                                <option value="computer-science">Computer Science</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-control w-full md:w-48">
+                            <select class="select select-bordered" id="levelFilter">
+                                <option value="">All Levels</option>
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+                        <div class="form-control w-full md:w-48">
+                            <select class="select select-bordered" id="typeFilter">
+                                <option value="">All Types</option>
+                                <option value="free">Free</option>
+                                <option value="premium">Premium</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tutorials Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="tutorialsGrid">
+                <!-- Tutorials will be populated here -->
+            </div>
+
+            <!-- No Results Message -->
+            <div id="noResults" class="hidden text-center py-8">
+                <p class="text-gray-600">No tutorials found matching your criteria.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-10 bg-base-200 text-base-content rounded mt-8">
+        <div>
+            <p>Copyright © 2025 - All rights reserved by StudyMate</p>
+        </div>
+    </footer>
+
+    <script>
+        // Check if teacher is logged in
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser || currentUser.role !== 'tutor') {
+            window.location.href = 'teacher-login.html';
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'teacher-login.html';
+        }
+
+        // Initialize tutorials
+        function initializeTutorials() {
+            loadTutorials();
+            setupFilters();
+        }
+
+        // Load tutorials
+        function loadTutorials() {
+            const tutorials = currentUser.tutorials || [];
+            const tutorialsGrid = document.getElementById('tutorialsGrid');
+            const noResults = document.getElementById('noResults');
+            
+            if (tutorials.length === 0) {
+                tutorialsGrid.innerHTML = '';
+                noResults.classList.remove('hidden');
+                return;
+            }
+            
+            noResults.classList.add('hidden');
+            tutorialsGrid.innerHTML = tutorials.map(tutorial => `
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h2 class="card-title">${tutorial.title}</h2>
+                        <p>${tutorial.description}</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="badge badge-primary">${tutorial.type}</span>
+                            <span class="text-sm text-gray-500">${new Date(tutorial.createdAt).toLocaleDateString()}</span>
+                        </div>
+                        <div class="card-actions justify-end mt-4">
+                            <button onclick="editTutorial('${tutorial.id}')" class="btn btn-sm btn-primary">Edit</button>
+                            <button onclick="deleteTutorial('${tutorial.id}')" class="btn btn-sm btn-error">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter tutorials
+        function filterTutorials(tutorials, filters) {
+            return tutorials.filter(tutorial => {
+                if (filters.search && !tutorial.title.toLowerCase().includes(filters.search.toLowerCase())) {
+                    return false;
+                }
+                if (filters.subject && tutorial.subject !== filters.subject) {
+                    return false;
+                }
+                if (filters.level && tutorial.level !== filters.level) {
+                    return false;
+                }
+                if (filters.type && tutorial.type !== filters.type) {
+                    return false;
+                }
+                return true;
+            });
+        }
+
+        // Setup filters
+        function setupFilters() {
+            const searchInput = document.getElementById('searchInput');
+            const subjectFilter = document.getElementById('subjectFilter');
+            const levelFilter = document.getElementById('levelFilter');
+            const typeFilter = document.getElementById('typeFilter');
+
+            function applyFilters() {
+                const filters = {
+                    search: searchInput.value,
+                    subject: subjectFilter.value,
+                    level: levelFilter.value,
+                    type: typeFilter.value
+                };
+                loadTutorials(filters);
+            }
+
+            searchInput.addEventListener('input', applyFilters);
+            subjectFilter.addEventListener('change', applyFilters);
+            levelFilter.addEventListener('change', applyFilters);
+            typeFilter.addEventListener('change', applyFilters);
+        }
+
+        // Edit tutorial
+        function editTutorial(tutorialId) {
+            window.location.href = `edit-tutorial.html?id=${tutorialId}`;
+        }
+
+        // Delete tutorial
+        function deleteTutorial(tutorialId) {
+            if (confirm('Are you sure you want to delete this tutorial?')) {
+                // Remove tutorial from teacher's tutorials
+                currentUser.tutorials = currentUser.tutorials.filter(t => t.id !== tutorialId);
+                
+                // Update teacher in localStorage
+                const teachers = JSON.parse(localStorage.getItem('teachers')) || [];
+                const teacherIndex = teachers.findIndex(t => t.id === currentUser.id);
+                if (teacherIndex !== -1) {
+                    teachers[teacherIndex] = currentUser;
+                    localStorage.setItem('teachers', JSON.stringify(teachers));
+                }
+                
+                // Update current teacher
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                
+                // Reload tutorials
+                loadTutorials();
+            }
+        }
+
+        // Initialize the page
+        initializeTutorials();
+    </script>
+</body>
+</html> 

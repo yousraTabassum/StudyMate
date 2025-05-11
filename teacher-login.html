@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyMate - Login</title>
+    <title>StudyMate - Teacher Login</title>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -11,14 +11,13 @@
     <div class="hero min-h-screen">
         <div class="hero-content flex-col lg:flex-row-reverse">
             <div class="text-center lg:text-left lg:ml-8">
-                <h1 class="text-5xl font-bold">Welcome to StudyMate!</h1>
-                <h2 class="text-3xl font-bold">AI - Powered Personalized Study Assistant</h2>
-                <p class="py-6">Your personal academic companion for better learning and organization. Access study materials, take quizzes, and track your progress all in one place.</p>
+                <h1 class="text-5xl font-bold">Welcome Teachers!</h1>
+                <p class="py-6">Share your knowledge, create tutorials, and help students excel in their studies. Join our community of dedicated educators.</p>
             </div>
             <div class="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
                 <div class="card-body">
-                    <h2 class="text-2xl font-bold text-center mb-4">Login</h2>
-                    <form id="loginForm" class="space-y-4">
+                    <h2 class="text-2xl font-bold text-center mb-4">Teacher Login</h2>
+                    <form id="teacherLoginForm" class="space-y-4">
                         <div class="form-control">
                             <label class="label">
                                 <span class="label-text">Email</span>
@@ -40,8 +39,12 @@
                     </form>
                     <div class="divider">OR</div>
                     <div class="text-center">
-                        <p class="mb-4">Don't have an account?</p>
-                        <a href="signup.html" class="btn btn-outline btn-primary">Sign Up</a>
+                        <p class="mb-4">Don't have a teacher account?</p>
+                        <a href="teacher-signup.html" class="btn btn-outline btn-primary">Sign Up as Teacher</a>
+                    </div>
+                    <div class="text-center mt-4">
+                        <p class="mb-4">Are you a student?</p>
+                        <a href="login.html" class="btn btn-outline btn-secondary">Student Login</a>
                     </div>
                 </div>
             </div>
@@ -49,7 +52,7 @@
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('teacherLoginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const email = document.getElementById('email').value;
@@ -58,21 +61,15 @@
             // Get users from localStorage
             const users = JSON.parse(localStorage.getItem('users')) || [];
             
-            // Find user
-            const user = users.find(u => u.email === email && u.password === password);
+            // Find user with tutor role
+            const user = users.find(u => u.email === email && u.password === password && u.role === 'tutor');
             
             if (user) {
                 // Store current user
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 
-                // Redirect based on role
-                if (user.role === 'student') {
-                    window.location.href = 'dashboard.html';
-                } else if (user.role === 'tutor') {
-                    window.location.href = 'teacher-dashboard.html';
-                } else if (user.role === 'admin') {
-                    window.location.href = 'admin-dashboard.html';
-                }
+                // Redirect to teacher dashboard
+                window.location.href = 'teacher-dashboard.html';
             } else {
                 alert('Invalid email or password!');
             }

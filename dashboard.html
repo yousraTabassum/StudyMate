@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyMate - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-base-200">
+    <!-- Navigation -->
+    <div class="navbar bg-base-100 shadow-lg">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <label tabindex="0" class="btn btn-ghost lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+                    </svg>
+                </label>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a href="library.html">Library</a></li>
+                    <li><a href="upload.html">Upload</a></li>
+                    <li><a href="quiz.html">Quizzes</a></li>
+                    <li><a href="progress.html">Progress</a></li>
+                    <li><a href="routine.html">Study Routine</a></li>
+                    <li><a href="notes.html">My Notes</a></li>
+                    <li><a href="tutorials.html">Tutorials</a></li>
+                    <li><a href="certificates.html">Certificates</a></li>
+                </ul>
+            </div>
+            <a href="index.html" class="btn btn-ghost normal-case text-xl">StudyMate</a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal px-1">
+                <li><a href="library.html">Library</a></li>
+                <li><a href="upload.html">Upload</a></li>
+                <li><a href="quiz.html">Quizzes</a></li>
+                <li><a href="progress.html">Progress</a></li>
+                <li><a href="routine.html">Study Routine</a></li>
+                <li><a href="notes.html">My Notes</a></li>
+                <li><a href="tutorials.html">Tutorials</a></li>
+                <li><a href="certificates.html">Certificates</a></li>
+            </ul>
+        </div>
+        <div class="navbar-end">
+            <a href="profile.html" class="btn btn-ghost">Profile</a>
+            <button onclick="logout()" class="btn btn-ghost">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-6xl mx-auto">
+            <!-- Welcome Section -->
+            <div class="card bg-base-100 shadow-xl mb-8">
+                <div class="card-body">
+                    <h1 class="text-3xl font-bold mb-4">Welcome back, <span id="userName">Student</span>!</h1>
+                    <p class="text-gray-600">Track your progress, access study materials, and continue your learning journey.</p>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="stat bg-base-100 shadow-xl rounded-lg">
+                    <div class="stat-figure text-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                    </div>
+                    <div class="stat-title">Total Notes</div>
+                    <div class="stat-value" id="totalNotes">0</div>
+                </div>
+                <div class="stat bg-base-100 shadow-xl rounded-lg">
+                    <div class="stat-figure text-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                    </div>
+                    <div class="stat-title">Quizzes Taken</div>
+                    <div class="stat-value" id="totalQuizzes">0</div>
+                </div>
+                <div class="stat bg-base-100 shadow-xl rounded-lg">
+                    <div class="stat-figure text-accent">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <div class="stat-title">Points Earned</div>
+                    <div class="stat-value" id="totalPoints">0</div>
+                </div>
+                <div class="stat bg-base-100 shadow-xl rounded-lg">
+                    <div class="stat-figure text-info">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                        </svg>
+                    </div>
+                    <div class="stat-title">Certificates</div>
+                    <div class="stat-value" id="totalCertificates">0</div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Recent Notes -->
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4">Recent Notes</h2>
+                        <div class="space-y-4" id="recentNotes">
+                            <!-- Notes will be populated here -->
+                        </div>
+                        <div class="card-actions justify-end mt-4">
+                            <a href="notes.html" class="btn btn-primary">View All Notes</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Quizzes -->
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4">Recent Quizzes</h2>
+                        <div class="space-y-4" id="recentQuizzes">
+                            <!-- Quizzes will be populated here -->
+                        </div>
+                        <div class="card-actions justify-end mt-4">
+                            <a href="quiz.html" class="btn btn-primary">Take More Quizzes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Study Progress -->
+            <div class="card bg-base-100 shadow-xl mt-8">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Study Progress</h2>
+                    <div class="overflow-x-auto">
+                        <table class="table w-full">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Progress</th>
+                                    <th>Last Activity</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studyProgress">
+                                <!-- Progress will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+                <a href="upload.html" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+                    <div class="card-body">
+                        <h3 class="card-title">Upload Notes</h3>
+                        <p>Share your study materials with others</p>
+                    </div>
+                </a>
+                <a href="quiz.html" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+                    <div class="card-body">
+                        <h3 class="card-title">Take Quiz</h3>
+                        <p>Test your knowledge</p>
+                    </div>
+                </a>
+                <a href="routine.html" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+                    <div class="card-body">
+                        <h3 class="card-title">Study Routine</h3>
+                        <p>Plan your study schedule</p>
+                    </div>
+                </a>
+                <a href="tutorials.html" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+                    <div class="card-body">
+                        <h3 class="card-title">Browse Tutorials</h3>
+                        <p>Learn from expert teachers</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-10 bg-base-200 text-base-content rounded mt-8">
+        <div>
+            <p>Copyright © 2025 - All rights reserved by StudyMate</p>
+        </div>
+    </footer>
+
+    <script>
+        // Check if user is logged in and has correct role
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        } else if (currentUser.role !== 'student') {
+            // Redirect to appropriate dashboard based on role
+            if (currentUser.role === 'tutor') {
+                window.location.href = 'teacher-dashboard.html';
+            } else if (currentUser.role === 'admin') {
+                window.location.href = 'admin-dashboard.html';
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+
+        // Initialize dashboard
+        function initializeDashboard() {
+            // Set user name
+            document.getElementById('userName').textContent = currentUser.name;
+
+            // Load stats
+            loadStats();
+            
+            // Load recent activity
+            loadRecentActivity();
+            
+            // Load study progress
+            loadStudyProgress();
+        }
+
+        // Load stats
+        function loadStats() {
+            // Get notes count
+            const notes = JSON.parse(localStorage.getItem(`notes_${currentUser.email}`)) || [];
+            document.getElementById('totalNotes').textContent = notes.length;
+
+            // Get quiz results
+            const quizResults = JSON.parse(localStorage.getItem('quizResults')) || [];
+            document.getElementById('totalQuizzes').textContent = quizResults.length;
+
+            // Get points
+            document.getElementById('totalPoints').textContent = currentUser.points || 0;
+
+            // Get certificates
+            document.getElementById('totalCertificates').textContent = (currentUser.certificates || []).length;
+        }
+
+        // Load recent activity
+        function loadRecentActivity() {
+            // Load recent notes
+            const notes = JSON.parse(localStorage.getItem(`notes_${currentUser.email}`)) || [];
+            const recentNotes = notes.slice(-3).reverse();
+            
+            document.getElementById('recentNotes').innerHTML = recentNotes.map(note => `
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h4 class="font-bold">${note.title}</h4>
+                        <p class="text-sm text-gray-500">${new Date(note.date).toLocaleDateString()}</p>
+                    </div>
+                    <a href="view-note.html?id=${note.id}" class="btn btn-sm">View</a>
+                </div>
+            `).join('') || '<p>No recent notes</p>';
+
+            // Load recent quizzes
+            const quizResults = JSON.parse(localStorage.getItem('quizResults')) || [];
+            const recentQuizzes = quizResults.slice(-3).reverse();
+            
+            document.getElementById('recentQuizzes').innerHTML = recentQuizzes.map(quiz => `
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h4 class="font-bold">${quiz.title}</h4>
+                        <p class="text-sm text-gray-500">Score: ${quiz.score}%</p>
+                    </div>
+                    <a href="quiz.html?id=${quiz.id}" class="btn btn-sm">Retake</a>
+                </div>
+            `).join('') || '<p>No recent quizzes</p>';
+        }
+
+        // Load study progress
+        function loadStudyProgress() {
+            const subjects = ['Mathematics', 'Physics', 'Chemistry', 'Biology', 'Computer Science'];
+            const progress = currentUser.progress || {};
+            
+            document.getElementById('studyProgress').innerHTML = subjects.map(subject => `
+                <tr>
+                    <td>${subject}</td>
+                    <td>
+                        <progress class="progress progress-primary w-56" value="${progress[subject] || 0}" max="100"></progress>
+                    </td>
+                    <td>${progress[`${subject}_lastActivity`] ? new Date(progress[`${subject}_lastActivity`]).toLocaleDateString() : 'No activity'}</td>
+                    <td>
+                        <a href="subject.html?name=${subject.toLowerCase()}" class="btn btn-sm">Study</a>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Initialize the page
+        initializeDashboard();
+    </script>
+</body>
+</html> 

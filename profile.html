@@ -138,7 +138,7 @@
             <div class="card bg-base-100 shadow-xl mt-8">
                 <div class="card-body">
                     <h2 class="card-title mb-4">Activity Summary</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                         <div class="stat bg-base-200 rounded-lg">
                             <div class="stat-title">Total Notes</div>
                             <div class="stat-value" id="totalNotes">0</div>
@@ -148,9 +148,124 @@
                             <div class="stat-value" id="totalQuizzes">0</div>
                         </div>
                         <div class="stat bg-base-200 rounded-lg">
-                            <div class="stat-title">Average Score</div>
-                            <div class="stat-value" id="averageScore">0%</div>
+                            <div class="stat-title">Points Earned</div>
+                            <div class="stat-value" id="totalPoints">0</div>
                         </div>
+                        <div class="stat bg-base-200 rounded-lg">
+                            <div class="stat-title">Certificates</div>
+                            <div class="stat-value" id="totalCertificates">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tutorials Section -->
+            <div class="card bg-base-100 shadow-xl mt-8">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">My Tutorials</h2>
+                    <div class="tabs tabs-boxed mb-4">
+                        <a class="tab tab-active" onclick="switchTutorialTab('free')">Free Tutorials</a>
+                        <a class="tab" onclick="switchTutorialTab('premium')">Premium Tutorials</a>
+                    </div>
+                    <div id="freeTutorials" class="space-y-4">
+                        <!-- Free tutorials will be populated here -->
+                    </div>
+                    <div id="premiumTutorials" class="space-y-4 hidden">
+                        <!-- Premium tutorials will be populated here -->
+                    </div>
+                    <div class="mt-4">
+                        <button onclick="createTutorial()" class="btn btn-primary">Create New Tutorial</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Certificates Section -->
+            <div class="card bg-base-100 shadow-xl mt-8">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">My Certificates</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="certificatesList">
+                        <!-- Certificates will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Points & Rewards Section -->
+            <div class="card bg-base-100 shadow-xl mt-8">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Points & Rewards</h2>
+                    <div class="stats shadow">
+                        <div class="stat">
+                            <div class="stat-title">Total Points</div>
+                            <div class="stat-value" id="pointsValue">0</div>
+                            <div class="stat-desc">Earn points by completing activities</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-title">Level</div>
+                            <div class="stat-value" id="userLevel">1</div>
+                            <div class="stat-desc">Level up by earning points</div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="font-bold mb-2">Recent Activities</h3>
+                        <div class="overflow-x-auto">
+                            <table class="table w-full">
+                                <thead>
+                                    <tr>
+                                        <th>Activity</th>
+                                        <th>Points</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pointsHistory">
+                                    <!-- Points history will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Teacher Profile Section -->
+            <div class="card bg-base-100 shadow-xl mt-8">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Teacher Profile</h2>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">Teacher Bio</span>
+                        </label>
+                        <textarea id="teacherBio" class="textarea textarea-bordered h-24" placeholder="Tell us about your teaching experience..."></textarea>
+                    </div>
+                    <div class="form-control mt-4">
+                        <label class="label">
+                            <span class="label-text">Specialization</span>
+                        </label>
+                        <input type="text" id="specialization" class="input input-bordered" placeholder="e.g., Mathematics, Physics, etc." />
+                    </div>
+                    <div class="form-control mt-4">
+                        <label class="label">
+                            <span class="label-text">Years of Experience</span>
+                        </label>
+                        <input type="number" id="experience" class="input input-bordered" min="0" />
+                    </div>
+                    <div class="mt-4">
+                        <button onclick="updateTeacherProfile()" class="btn btn-primary">Update Teacher Profile</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Donations Section -->
+            <div class="card bg-base-100 shadow-xl mt-8">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Support & Donations</h2>
+                    <div class="stats shadow">
+                        <div class="stat">
+                            <div class="stat-title">Total Donations Received</div>
+                            <div class="stat-value" id="totalDonations">$0</div>
+                            <div class="stat-desc">Thank you for your support!</div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button onclick="setupDonations()" class="btn btn-primary">Setup Donation Link</button>
                     </div>
                 </div>
             </div>
@@ -169,7 +284,7 @@
     <!-- Footer -->
     <footer class="footer footer-center p-10 bg-base-200 text-base-content rounded mt-8">
         <div>
-            <p>Copyright © 2024 - All rights reserved by StudyMate</p>
+            <p>Copyright © 2025 - All rights reserved by StudyMate</p>
         </div>
     </footer>
 
@@ -205,6 +320,21 @@
 
             // Update activity summary
             updateActivitySummary();
+            
+            // Initialize points and rewards
+            updatePointsAndRewards();
+            
+            // Initialize tutorials
+            loadTutorials();
+            
+            // Initialize certificates
+            loadCertificates();
+            
+            // Initialize teacher profile
+            loadTeacherProfile();
+            
+            // Initialize donations
+            loadDonations();
         }
 
         // Update activity summary
@@ -288,6 +418,117 @@
                 // Redirect to login
                 window.location.href = 'login.html';
             }
+        }
+
+        // Points and Rewards Functions
+        function updatePointsAndRewards() {
+            const points = currentUser.points || 0;
+            const level = Math.floor(points / 100) + 1;
+            
+            document.getElementById('pointsValue').textContent = points;
+            document.getElementById('userLevel').textContent = level;
+            document.getElementById('totalPoints').textContent = points;
+            
+            // Load points history
+            const pointsHistory = currentUser.pointsHistory || [];
+            const historyTable = document.getElementById('pointsHistory');
+            historyTable.innerHTML = pointsHistory.map(activity => `
+                <tr>
+                    <td>${activity.description}</td>
+                    <td>+${activity.points}</td>
+                    <td>${new Date(activity.date).toLocaleDateString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Tutorial Functions
+        function switchTutorialTab(type) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('tab-active'));
+            event.target.classList.add('tab-active');
+            
+            document.getElementById('freeTutorials').classList.toggle('hidden', type !== 'free');
+            document.getElementById('premiumTutorials').classList.toggle('hidden', type !== 'premium');
+        }
+
+        function loadTutorials() {
+            const tutorials = currentUser.tutorials || { free: [], premium: [] };
+            
+            // Load free tutorials
+            document.getElementById('freeTutorials').innerHTML = tutorials.free.map(tutorial => `
+                <div class="card bg-base-200">
+                    <div class="card-body">
+                        <h3 class="card-title">${tutorial.title}</h3>
+                        <p>${tutorial.description}</p>
+                        <div class="card-actions justify-end">
+                            <button onclick="editTutorial('${tutorial.id}')" class="btn btn-sm">Edit</button>
+                            <button onclick="deleteTutorial('${tutorial.id}')" class="btn btn-sm btn-error">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('') || '<p>No free tutorials yet.</p>';
+            
+            // Load premium tutorials
+            document.getElementById('premiumTutorials').innerHTML = tutorials.premium.map(tutorial => `
+                <div class="card bg-base-200">
+                    <div class="card-body">
+                        <h3 class="card-title">${tutorial.title}</h3>
+                        <p>${tutorial.description}</p>
+                        <div class="card-actions justify-end">
+                            <button onclick="editTutorial('${tutorial.id}')" class="btn btn-sm">Edit</button>
+                            <button onclick="deleteTutorial('${tutorial.id}')" class="btn btn-sm btn-error">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('') || '<p>No premium tutorials yet.</p>';
+        }
+
+        // Certificate Functions
+        function loadCertificates() {
+            const certificates = currentUser.certificates || [];
+            document.getElementById('certificatesList').innerHTML = certificates.map(cert => `
+                <div class="card bg-base-200">
+                    <div class="card-body">
+                        <h3 class="card-title">${cert.title}</h3>
+                        <p>Issued on: ${new Date(cert.date).toLocaleDateString()}</p>
+                        <div class="card-actions justify-end">
+                            <button onclick="downloadCertificate('${cert.id}')" class="btn btn-sm">Download</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('') || '<p>No certificates yet.</p>';
+            
+            document.getElementById('totalCertificates').textContent = certificates.length;
+        }
+
+        // Teacher Profile Functions
+        function loadTeacherProfile() {
+            const teacherProfile = currentUser.teacherProfile || {};
+            document.getElementById('teacherBio').value = teacherProfile.bio || '';
+            document.getElementById('specialization').value = teacherProfile.specialization || '';
+            document.getElementById('experience').value = teacherProfile.experience || 0;
+        }
+
+        function updateTeacherProfile() {
+            const teacherProfile = {
+                bio: document.getElementById('teacherBio').value,
+                specialization: document.getElementById('specialization').value,
+                experience: parseInt(document.getElementById('experience').value) || 0
+            };
+            
+            currentUser.teacherProfile = teacherProfile;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            alert('Teacher profile updated successfully!');
+        }
+
+        // Donations Functions
+        function loadDonations() {
+            const donations = currentUser.donations || { total: 0, history: [] };
+            document.getElementById('totalDonations').textContent = `$${donations.total}`;
+        }
+
+        function setupDonations() {
+            // Implement donation setup logic (e.g., connect to payment processor)
+            alert('Donation setup feature coming soon!');
         }
 
         // Initialize the page

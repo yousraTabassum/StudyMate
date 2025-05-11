@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyMate - Approve Tutorials</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-base-200">
+    <!-- Navigation -->
+    <div class="navbar bg-base-100 shadow-lg">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <label tabindex="0" class="btn btn-ghost lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+                    </svg>
+                </label>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a href="admin-dashboard.html">Dashboard</a></li>
+                    <li><a href="approve-tutorial.html">Approve Tutorials</a></li>
+                    <li><a href="admin-profile.html">Profile</a></li>
+                </ul>
+            </div>
+            <a href="index.html" class="btn btn-ghost normal-case text-xl">StudyMate</a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal px-1">
+                <li><a href="admin-dashboard.html">Dashboard</a></li>
+                <li><a href="approve-tutorial.html">Approve Tutorials</a></li>
+                <li><a href="admin-profile.html">Profile</a></li>
+            </ul>
+        </div>
+        <div class="navbar-end">
+            <button onclick="logout()" class="btn btn-ghost">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-6xl mx-auto">
+            <!-- Welcome Section -->
+            <div class="card bg-base-100 shadow-xl mb-8">
+                <div class="card-body">
+                    <h1 class="text-3xl font-bold mb-4">Welcome back, <span id="adminName">Admin</span>!</h1>
+                    <p class="text-gray-600">Review and manage tutorial submissions from teachers.</p>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="card bg-base-100 shadow-xl mb-8">
+                <div class="card-body">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="form-control flex-1">
+                            <input type="text" id="searchInput" placeholder="Search tutorials..." class="input input-bordered" />
+                        </div>
+                        <div class="form-control w-full md:w-48">
+                            <select class="select select-bordered" id="typeFilter">
+                                <option value="">All Types</option>
+                                <option value="free">Free</option>
+                                <option value="premium">Premium</option>
+                            </select>
+                        </div>
+                        <div class="form-control w-full md:w-48">
+                            <select class="select select-bordered" id="statusFilter">
+                                <option value="">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="approved">Approved</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tutorials Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="tutorialsGrid">
+                <!-- Tutorials will be populated here -->
+            </div>
+
+            <!-- No Results Message -->
+            <div id="noResults" class="hidden text-center py-8">
+                <p class="text-gray-600">No tutorials found matching your criteria.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Tutorial Modal -->
+    <div id="viewTutorialModal" class="modal hidden">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg mb-4">Tutorial Details</h3>
+            <div class="space-y-4">
+                <div>
+                    <h4 class="font-semibold">Title</h4>
+                    <p id="viewTitle"></p>
+                </div>
+                <div>
+                    <h4 class="font-semibold">Description</h4>
+                    <p id="viewDescription"></p>
+                </div>
+                <div>
+                    <h4 class="font-semibold">Type</h4>
+                    <p id="viewType"></p>
+                </div>
+                <div>
+                    <h4 class="font-semibold">Teacher</h4>
+                    <p id="viewTeacher"></p>
+                </div>
+                <div>
+                    <h4 class="font-semibold">Content</h4>
+                    <p id="viewContent"></p>
+                </div>
+            </div>
+            <div class="modal-action">
+                <button class="btn" onclick="document.getElementById('viewTutorialModal').classList.add('hidden')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-10 bg-base-200 text-base-content rounded mt-8">
+        <div>
+            <p>Copyright © 2025 - All rights reserved by StudyMate</p>
+        </div>
+    </footer>
+
+    <script>
+        // Check if admin is logged in
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser || currentUser.role !== 'admin') {
+            window.location.href = 'login.html';
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+
+        // Initialize tutorials
+        function initializeTutorials() {
+            loadTutorials();
+            setupFilters();
+        }
+
+        // Load tutorials
+        function loadTutorials() {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const allTutorials = [];
+            
+            // Collect all tutorials from all users
+            users.forEach(user => {
+                if (user.tutorials && user.tutorials.length > 0) {
+                    user.tutorials.forEach(tutorial => {
+                        allTutorials.push({
+                            ...tutorial,
+                            teacherName: user.name,
+                            teacherEmail: user.email
+                        });
+                    });
+                }
+            });
+            
+            const tutorialsGrid = document.getElementById('tutorialsGrid');
+            const noResults = document.getElementById('noResults');
+            
+            if (allTutorials.length === 0) {
+                tutorialsGrid.innerHTML = '';
+                noResults.classList.remove('hidden');
+                return;
+            }
+            
+            noResults.classList.add('hidden');
+            tutorialsGrid.innerHTML = allTutorials.map(tutorial => `
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h2 class="card-title">${tutorial.title}</h2>
+                        <p>${tutorial.description}</p>
+                        <div class="flex flex-col gap-2 mt-4">
+                            <div class="flex justify-between items-center">
+                                <span class="badge badge-primary">${tutorial.type}</span>
+                                <span class="text-sm text-gray-500">${new Date(tutorial.createdAt).toLocaleDateString()}</span>
+                            </div>
+                            <div class="text-sm">
+                                <p><strong>Teacher:</strong> ${tutorial.teacherName}</p>
+                                <p><strong>Email:</strong> ${tutorial.teacherEmail}</p>
+                                <p><strong>Status:</strong> <span class="badge ${getStatusBadgeClass(tutorial.status)}">${tutorial.status || 'Pending'}</span></p>
+                            </div>
+                        </div>
+                        <div class="card-actions justify-end mt-4">
+                            <button onclick="viewTutorial('${tutorial.id}')" class="btn btn-sm btn-primary">View</button>
+                            ${tutorial.status !== 'approved' ? `<button onclick="approveTutorial('${tutorial.id}')" class="btn btn-sm btn-success">Approve</button>` : ''}
+                            ${tutorial.status !== 'rejected' ? `<button onclick="rejectTutorial('${tutorial.id}')" class="btn btn-sm btn-error">Reject</button>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Get status badge class
+        function getStatusBadgeClass(status) {
+            switch(status) {
+                case 'approved':
+                    return 'badge-success';
+                case 'rejected':
+                    return 'badge-error';
+                default:
+                    return 'badge-warning';
+            }
+        }
+
+        // View tutorial
+        function viewTutorial(tutorialId) {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            let tutorial = null;
+            let teacher = null;
+            
+            // Find tutorial and its teacher
+            for (const user of users) {
+                if (user.tutorials) {
+                    const foundTutorial = user.tutorials.find(t => t.id === tutorialId);
+                    if (foundTutorial) {
+                        tutorial = foundTutorial;
+                        teacher = user;
+                        break;
+                    }
+                }
+            }
+            
+            if (tutorial) {
+                // Populate view modal
+                document.getElementById('viewTitle').textContent = tutorial.title;
+                document.getElementById('viewDescription').textContent = tutorial.description;
+                document.getElementById('viewType').textContent = tutorial.type;
+                document.getElementById('viewTeacher').textContent = teacher.name;
+                document.getElementById('viewContent').textContent = tutorial.content;
+                
+                // Show view modal
+                document.getElementById('viewTutorialModal').classList.remove('hidden');
+            }
+        }
+
+        // Approve tutorial
+        function approveTutorial(tutorialId) {
+            if (confirm('Are you sure you want to approve this tutorial?')) {
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                
+                // Find and update tutorial
+                for (const user of users) {
+                    if (user.tutorials) {
+                        const tutorialIndex = user.tutorials.findIndex(t => t.id === tutorialId);
+                        if (tutorialIndex !== -1) {
+                            user.tutorials[tutorialIndex].status = 'approved';
+                            break;
+                        }
+                    }
+                }
+                
+                // Update users in localStorage
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                // Reload tutorials
+                loadTutorials();
+                
+                // Update admin dashboard if it's open
+                updateAdminDashboard();
+            }
+        }
+
+        // Reject tutorial
+        function rejectTutorial(tutorialId) {
+            if (confirm('Are you sure you want to reject this tutorial?')) {
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                
+                // Find and update tutorial
+                for (const user of users) {
+                    if (user.tutorials) {
+                        const tutorialIndex = user.tutorials.findIndex(t => t.id === tutorialId);
+                        if (tutorialIndex !== -1) {
+                            user.tutorials[tutorialIndex].status = 'rejected';
+                            break;
+                        }
+                    }
+                }
+                
+                // Update users in localStorage
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                // Reload tutorials
+                loadTutorials();
+                
+                // Update admin dashboard if it's open
+                updateAdminDashboard();
+            }
+        }
+
+        // Setup filters
+        function setupFilters() {
+            const searchInput = document.getElementById('searchInput');
+            const typeFilter = document.getElementById('typeFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            
+            searchInput.addEventListener('input', loadTutorials);
+            typeFilter.addEventListener('change', loadTutorials);
+            statusFilter.addEventListener('change', loadTutorials);
+        }
+
+        // Add this function to approve-tutorial.html
+        function updateAdminDashboard() {
+            // Get the admin dashboard page if it's open
+            const adminDashboard = window.opener;
+            if (adminDashboard) {
+                // Reload the dashboard to update stats
+                adminDashboard.location.reload();
+            }
+        }
+
+        // Initialize the page
+        initializeTutorials();
+    </script>
+</body>
+</html> 

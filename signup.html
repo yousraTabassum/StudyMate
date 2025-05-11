@@ -9,20 +9,34 @@
 </head>
 <body class="min-h-screen bg-base-200">
     <div class="hero min-h-screen">
-        <div class="hero-content flex-col lg:flex-row-reverse">
-            <div class="text-center lg:text-left lg:ml-8">
-                <h1 class="text-5xl font-bold">Join StudyMate</h1>
-                <p class="py-6">Create your account and start your journey to better learning.</p>
+        <div class="hero-content flex-col lg:flex-row">
+            <div class="text-center lg:text-left lg:mr-8">
+                <h1 class="text-5xl font-bold">Join StudyMate!</h1>
+                <h2 class="text-3xl font-bold">AI - Powered Personalized Study Assistant</h2>
+                <p class="py-6">Create your account to access personalized study materials, track your progress, and connect with other students.</p>
             </div>
             <div class="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
                 <div class="card-body">
-                    <h2 class="card-title justify-center mb-4">Create Account</h2>
+                    <h2 class="text-2xl font-bold text-center mb-4">Sign Up</h2>
                     <form id="signupForm" class="space-y-4">
+                        <!-- Role Selection -->
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">I am a</span>
+                            </label>
+                            <select id="role" class="select select-bordered" required onchange="toggleRoleFields()">
+                                <option value="">Select your role</option>
+                                <option value="student">Student</option>
+                                <option value="tutor">Tutor</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+
                         <div class="form-control">
                             <label class="label">
                                 <span class="label-text">Full Name</span>
                             </label>
-                            <input type="text" id="name" placeholder="Enter your full name" class="input input-bordered" required />
+                            <input type="text" id="fullName" placeholder="Enter your full name" class="input input-bordered" required />
                         </div>
                         <div class="form-control">
                             <label class="label">
@@ -42,12 +56,64 @@
                             </label>
                             <input type="password" id="confirmPassword" placeholder="Confirm your password" class="input input-bordered" required />
                         </div>
+
+                        <!-- Student-specific fields -->
+                        <div id="studentFields" class="hidden space-y-4">
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Education Level</span>
+                                </label>
+                                <select id="educationLevel" class="select select-bordered">
+                                    <option value="">Select your education level</option>
+                                    <option value="school">School</option>
+                                    <option value="college">College</option>
+                                    <option value="university">University</option>
+                                </select>
+                            </div>
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Grade/Year</span>
+                                </label>
+                                <input type="text" id="grade" placeholder="Enter your grade or year" class="input input-bordered" />
+                            </div>
+                        </div>
+
+                        <!-- Tutor-specific fields -->
+                        <div id="tutorFields" class="hidden space-y-4">
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Specialization</span>
+                                </label>
+                                <select id="specialization" class="select select-bordered">
+                                    <option value="">Select your specialization</option>
+                                    <option value="mathematics">Mathematics</option>
+                                    <option value="science">Science</option>
+                                    <option value="english">English</option>
+                                    <option value="computer-science">Computer Science</option>
+                                </select>
+                            </div>
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Years of Experience</span>
+                                </label>
+                                <input type="number" id="experience" placeholder="Enter years of experience" class="input input-bordered" min="0" />
+                            </div>
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Bio</span>
+                                </label>
+                                <textarea id="bio" placeholder="Tell us about yourself and your teaching experience" class="textarea textarea-bordered h-24"></textarea>
+                            </div>
+                        </div>
+
                         <div class="form-control mt-6">
-                            <button type="submit" class="btn btn-primary">Sign Up</button>
+                            <button type="submit" class="btn btn-primary">Create Account</button>
                         </div>
                     </form>
-                    <div class="text-center mt-4">
-                        <p>Already have an account? <a href="login.html" class="link link-primary">Login</a></p>
+                    <div class="divider">OR</div>
+                    <div class="text-center">
+                        <p class="mb-4">Already have an account?</p>
+                        <a href="login.html" class="btn btn-outline btn-primary">Login</a>
                     </div>
                 </div>
             </div>
@@ -55,20 +121,53 @@
     </div>
 
     <script>
+        // Toggle role-specific fields
+        function toggleRoleFields() {
+            const role = document.getElementById('role').value;
+            const studentFields = document.getElementById('studentFields');
+            const tutorFields = document.getElementById('tutorFields');
+
+            if (role === 'student') {
+                studentFields.classList.remove('hidden');
+                tutorFields.classList.add('hidden');
+                // Make student fields required
+                document.getElementById('educationLevel').required = true;
+                document.getElementById('grade').required = true;
+                // Make tutor fields not required
+                document.getElementById('specialization').required = false;
+                document.getElementById('experience').required = false;
+                document.getElementById('bio').required = false;
+            } else if (role === 'tutor') {
+                studentFields.classList.add('hidden');
+                tutorFields.classList.remove('hidden');
+                // Make tutor fields required
+                document.getElementById('specialization').required = true;
+                document.getElementById('experience').required = true;
+                document.getElementById('bio').required = true;
+                // Make student fields not required
+                document.getElementById('educationLevel').required = false;
+                document.getElementById('grade').required = false;
+            } else {
+                studentFields.classList.add('hidden');
+                tutorFields.classList.add('hidden');
+            }
+        }
+
         document.getElementById('signupForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const name = document.getElementById('name').value;
+            const role = document.getElementById('role').value;
+            const fullName = document.getElementById('fullName').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-            
+
             // Validate passwords match
             if (password !== confirmPassword) {
                 alert('Passwords do not match!');
                 return;
             }
-            
+
             // Get existing users
             const users = JSON.parse(localStorage.getItem('users')) || [];
             
@@ -77,26 +176,51 @@
                 alert('Email already registered!');
                 return;
             }
-            
-            // Create new user
+
+            // Create new user object based on role
             const newUser = {
-                name,
-                email,
-                password,
+                id: Date.now().toString(),
+                role: role,
+                name: fullName,
+                email: email,
+                password: password,
                 createdAt: new Date().toISOString()
             };
-            
-            // Add to users array
+
+            // Add role-specific fields
+            if (role === 'student') {
+                newUser.educationLevel = document.getElementById('educationLevel').value;
+                newUser.grade = document.getElementById('grade').value;
+                newUser.points = 0;
+                newUser.certificates = [];
+                newUser.achievements = [];
+                newUser.notes = [];
+                newUser.quizzes = [];
+                newUser.tutorials = { enrolled: [] };
+            } else if (role === 'tutor') {
+                newUser.specialization = document.getElementById('specialization').value;
+                newUser.experience = parseInt(document.getElementById('experience').value);
+                newUser.bio = document.getElementById('bio').value;
+                newUser.tutorials = [];
+                newUser.ratings = [];
+                newUser.totalStudents = 0;
+            }
+
+            // Add user to users array
             users.push(newUser);
-            
-            // Save to localStorage
             localStorage.setItem('users', JSON.stringify(users));
-            
-            // Store as current user
+
+            // Store current user
             localStorage.setItem('currentUser', JSON.stringify(newUser));
-            
-            // Redirect to index
-            window.location.href = 'index.html';
+
+            // Redirect based on role
+            if (role === 'student') {
+                window.location.href = 'dashboard.html';
+            } else if (role === 'tutor') {
+                window.location.href = 'teacher-dashboard.html';
+            } else if (role === 'admin') {
+                window.location.href = 'admin-dashboard.html';
+            }
         });
     </script>
 </body>

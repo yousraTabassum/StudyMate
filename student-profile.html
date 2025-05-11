@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyMate - Student Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-base-200">
+    <!-- Navigation -->
+    <div class="navbar bg-base-100 shadow-lg">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <label tabindex="0" class="btn btn-ghost lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+                    </svg>
+                </label>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a href="library.html">Library</a></li>
+                    <li><a href="upload.html">Upload</a></li>
+                    <li><a href="quiz.html">Quizzes</a></li>
+                    <li><a href="progress.html">Progress</a></li>
+                    <li><a href="routine.html">Study Routine</a></li>
+                    <li><a href="notes.html">My Notes</a></li>
+                    <li><a href="tutorials.html">Tutorials</a></li>
+                    <li><a href="certificates.html">Certificates</a></li>
+                </ul>
+            </div>
+            <a href="index.html" class="btn btn-ghost normal-case text-xl">StudyMate</a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal px-1">
+                <li><a href="library.html">Library</a></li>
+                <li><a href="upload.html">Upload</a></li>
+                <li><a href="quiz.html">Quizzes</a></li>
+                <li><a href="progress.html">Progress</a></li>
+                <li><a href="routine.html">Study Routine</a></li>
+                <li><a href="notes.html">My Notes</a></li>
+                <li><a href="tutorials.html">Tutorials</a></li>
+                <li><a href="certificates.html">Certificates</a></li>
+            </ul>
+        </div>
+        <div class="navbar-end">
+            <button onclick="logout()" class="btn btn-ghost">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <!-- Profile Header -->
+            <div class="card bg-base-100 shadow-xl mb-8">
+                <div class="card-body">
+                    <div class="flex items-center gap-6">
+                        <div class="avatar">
+                            <div class="w-24 rounded-full">
+                                <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=random" alt="Profile" />
+                            </div>
+                        </div>
+                        <div>
+                            <h1 class="text-3xl font-bold" id="studentName">Student Name</h1>
+                            <p class="text-gray-600" id="educationInfo">Education Level - Grade</p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <div class="badge badge-primary">Points: <span id="totalPoints">0</span></div>
+                                <div class="badge badge-secondary">Level: <span id="studentLevel">1</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Sections -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left Column -->
+                <div class="lg:col-span-2 space-y-8">
+                    <!-- Academic Progress -->
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h2 class="card-title mb-4">Academic Progress</h2>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span>Overall Progress</span>
+                                    <progress class="progress progress-primary w-56" value="70" max="100"></progress>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>Quizzes Completed</span>
+                                    <span class="font-bold" id="quizzesCompleted">0</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>Average Score</span>
+                                    <span class="font-bold" id="averageScore">0%</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>Study Streak</span>
+                                    <span class="font-bold" id="studyStreak">0 days</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Enrolled Tutorials -->
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h2 class="card-title mb-4">Enrolled Tutorials</h2>
+                            <div class="space-y-4" id="enrolledTutorials">
+                                <!-- Tutorials will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Quiz Results -->
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h2 class="card-title mb-4">Recent Quiz Results</h2>
+                            <div class="overflow-x-auto">
+                                <table class="table w-full">
+                                    <thead>
+                                        <tr>
+                                            <th>Quiz</th>
+                                            <th>Subject</th>
+                                            <th>Score</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="quizResults">
+                                        <!-- Quiz results will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="space-y-8">
+                    <!-- Achievements -->
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h2 class="card-title mb-4">Achievements</h2>
+                            <div class="space-y-4" id="achievements">
+                                <!-- Achievements will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Uploaded Materials -->
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h2 class="card-title mb-4">Uploaded Materials</h2>
+                            <div class="space-y-4" id="uploadedMaterials">
+                                <!-- Uploaded materials will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Study Goals -->
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h2 class="card-title mb-4">Study Goals</h2>
+                            <form id="goalsForm" class="space-y-4">
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text">Daily Study Hours</span>
+                                    </label>
+                                    <input type="number" class="input input-bordered" id="dailyHours" min="1" max="24" />
+                                </div>
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text">Weekly Quiz Target</span>
+                                    </label>
+                                    <input type="number" class="input input-bordered" id="weeklyQuizzes" min="1" />
+                                </div>
+                                <button type="submit" class="btn btn-primary">Update Goals</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-10 bg-base-200 text-base-content rounded mt-8">
+        <div>
+            <p>Copyright © 2025 - All rights reserved by StudyMate</p>
+        </div>
+    </footer>
+
+    <script>
+        // Check if user is logged in and is a student
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser || currentUser.role !== 'student') {
+            window.location.href = 'login.html';
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+
+        // Initialize profile
+        function initializeProfile() {
+            // Set basic info
+            document.getElementById('studentName').textContent = currentUser.name;
+            document.getElementById('educationInfo').textContent = 
+                `${currentUser.educationLevel} - Grade ${currentUser.grade}`;
+            document.getElementById('totalPoints').textContent = currentUser.points || 0;
+            document.getElementById('studentLevel').textContent = 
+                Math.floor((currentUser.points || 0) / 100) + 1;
+
+            // Load academic progress
+            loadAcademicProgress();
+            
+            // Load enrolled tutorials
+            loadEnrolledTutorials();
+            
+            // Load quiz results
+            loadQuizResults();
+            
+            // Load achievements
+            loadAchievements();
+            
+            // Load uploaded materials
+            loadUploadedMaterials();
+            
+            // Load study goals
+            loadStudyGoals();
+        }
+
+        // Load academic progress
+        function loadAcademicProgress() {
+            const quizzes = currentUser.quizzes || [];
+            const completedQuizzes = quizzes.filter(q => q.completed);
+            
+            document.getElementById('quizzesCompleted').textContent = completedQuizzes.length;
+            
+            const averageScore = completedQuizzes.length > 0
+                ? Math.round(completedQuizzes.reduce((sum, q) => sum + q.score, 0) / completedQuizzes.length)
+                : 0;
+            document.getElementById('averageScore').textContent = `${averageScore}%`;
+            
+            // Calculate study streak (placeholder)
+            document.getElementById('studyStreak').textContent = '3 days';
+        }
+
+        // Load enrolled tutorials
+        function loadEnrolledTutorials() {
+            const tutorials = currentUser.tutorials?.enrolled || [];
+            
+            document.getElementById('enrolledTutorials').innerHTML = tutorials.map(tutorial => `
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h4 class="font-bold">${tutorial.title}</h4>
+                        <p class="text-sm text-gray-500">${tutorial.teacherName}</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <progress class="progress progress-primary w-24" value="${tutorial.progress || 0}" max="100"></progress>
+                        <a href="view-tutorial.html?id=${tutorial.id}" class="btn btn-sm">Continue</a>
+                    </div>
+                </div>
+            `).join('') || '<p>No tutorials enrolled yet</p>';
+        }
+
+        // Load quiz results
+        function loadQuizResults() {
+            const quizzes = currentUser.quizzes || [];
+            const recentQuizzes = quizzes.slice(-5).reverse();
+            
+            document.getElementById('quizResults').innerHTML = recentQuizzes.map(quiz => `
+                <tr>
+                    <td>${quiz.title}</td>
+                    <td>${quiz.subject}</td>
+                    <td>${quiz.score}%</td>
+                    <td>${new Date(quiz.date).toLocaleDateString()}</td>
+                </tr>
+            `).join('') || '<tr><td colspan="4" class="text-center">No quiz results yet</td></tr>';
+        }
+
+        // Load achievements
+        function loadAchievements() {
+            const achievements = currentUser.achievements || [];
+            
+            document.getElementById('achievements').innerHTML = achievements.map(achievement => `
+                <div class="flex items-center gap-4">
+                    <div class="avatar">
+                        <div class="w-12 rounded-full">
+                            <img src="${achievement.icon}" alt="${achievement.title}" />
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold">${achievement.title}</h4>
+                        <p class="text-sm text-gray-500">${achievement.description}</p>
+                    </div>
+                </div>
+            `).join('') || '<p>No achievements yet</p>';
+        }
+
+        // Load uploaded materials
+        function loadUploadedMaterials() {
+            const materials = currentUser.notes || [];
+            
+            document.getElementById('uploadedMaterials').innerHTML = materials.map(material => `
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h4 class="font-bold">${material.title}</h4>
+                        <p class="text-sm text-gray-500">${material.subject}</p>
+                    </div>
+                    <a href="view-note.html?id=${material.id}" class="btn btn-sm">View</a>
+                </div>
+            `).join('') || '<p>No materials uploaded yet</p>';
+        }
+
+        // Load study goals
+        function loadStudyGoals() {
+            const goals = currentUser.studyGoals || {};
+            document.getElementById('dailyHours').value = goals.dailyHours || 2;
+            document.getElementById('weeklyQuizzes').value = goals.weeklyQuizzes || 3;
+        }
+
+        // Handle study goals form submission
+        document.getElementById('goalsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Update study goals
+            currentUser.studyGoals = {
+                dailyHours: parseInt(document.getElementById('dailyHours').value),
+                weeklyQuizzes: parseInt(document.getElementById('weeklyQuizzes').value)
+            };
+            
+            // Update in localStorage
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex] = currentUser;
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            alert('Study goals updated successfully!');
+        });
+
+        // Initialize the page
+        initializeProfile();
+    </script>
+</body>
+</html> 

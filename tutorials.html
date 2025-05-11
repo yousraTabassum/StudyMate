@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyMate - Tutorials</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-base-200">
+    <!-- Navigation -->
+    <div class="navbar bg-base-100 shadow-lg">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <label tabindex="0" class="btn btn-ghost lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+                    </svg>
+                </label>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a href="library.html">Library</a></li>
+                    <li><a href="upload.html">Upload</a></li>
+                    <li><a href="quiz.html">Quizzes</a></li>
+                    <li><a href="progress.html">Progress</a></li>
+                    <li><a href="routine.html">Study Routine</a></li>
+                    <li><a href="notes.html">My Notes</a></li>
+                </ul>
+            </div>
+            <a href="index.html" class="btn btn-ghost normal-case text-xl">StudyMate</a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal px-1">
+                <li><a href="library.html">Library</a></li>
+                <li><a href="upload.html">Upload</a></li>
+                <li><a href="quiz.html">Quizzes</a></li>
+                <li><a href="progress.html">Progress</a></li>
+                <li><a href="routine.html">Study Routine</a></li>
+                <li><a href="notes.html">My Notes</a></li>
+            </ul>
+        </div>
+        <div class="navbar-end">
+            <a href="profile.html" class="btn btn-ghost">Profile</a>
+            <button onclick="logout()" class="btn btn-ghost">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-6xl mx-auto">
+            <h1 class="text-3xl font-bold mb-8">Tutorials</h1>
+
+            <!-- Tutorial Categories -->
+            <div class="tabs tabs-boxed mb-8">
+                <a class="tab tab-active" onclick="switchCategory('all')">All Tutorials</a>
+                <a class="tab" onclick="switchCategory('free')">Free Tutorials</a>
+                <a class="tab" onclick="switchCategory('premium')">Premium Tutorials</a>
+                <a class="tab" onclick="switchCategory('my-tutorials')">My Tutorials</a>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="flex flex-wrap gap-4 mb-8">
+                <div class="form-control flex-1">
+                    <input type="text" id="searchInput" placeholder="Search tutorials..." class="input input-bordered w-full" />
+                </div>
+                <select id="subjectFilter" class="select select-bordered">
+                    <option value="">All Subjects</option>
+                    <option value="mathematics">Mathematics</option>
+                    <option value="physics">Physics</option>
+                    <option value="chemistry">Chemistry</option>
+                    <option value="biology">Biology</option>
+                    <option value="computer-science">Computer Science</option>
+                </select>
+                <select id="levelFilter" class="select select-bordered">
+                    <option value="">All Levels</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                </select>
+            </div>
+
+            <!-- Tutorial Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="tutorialGrid">
+                <!-- Tutorials will be populated here -->
+            </div>
+
+            <!-- Create Tutorial Modal -->
+            <dialog id="createTutorialModal" class="modal">
+                <div class="modal-box">
+                    <h3 class="font-bold text-lg mb-4">Create New Tutorial</h3>
+                    <form id="createTutorialForm" class="space-y-4">
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Title</span>
+                            </label>
+                            <input type="text" id="tutorialTitle" class="input input-bordered" required />
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Description</span>
+                            </label>
+                            <textarea id="tutorialDescription" class="textarea textarea-bordered h-24" required></textarea>
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Subject</span>
+                            </label>
+                            <select id="tutorialSubject" class="select select-bordered" required>
+                                <option value="mathematics">Mathematics</option>
+                                <option value="physics">Physics</option>
+                                <option value="chemistry">Chemistry</option>
+                                <option value="biology">Biology</option>
+                                <option value="computer-science">Computer Science</option>
+                            </select>
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Level</span>
+                            </label>
+                            <select id="tutorialLevel" class="select select-bordered" required>
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Type</span>
+                            </label>
+                            <select id="tutorialType" class="select select-bordered" required>
+                                <option value="free">Free</option>
+                                <option value="premium">Premium</option>
+                            </select>
+                        </div>
+                        <div class="form-control" id="priceField" style="display: none;">
+                            <label class="label">
+                                <span class="label-text">Price ($)</span>
+                            </label>
+                            <input type="number" id="tutorialPrice" class="input input-bordered" min="0" step="0.01" />
+                        </div>
+                        <div class="modal-action">
+                            <button type="submit" class="btn btn-primary">Create Tutorial</button>
+                            <button type="button" onclick="closeCreateModal()" class="btn">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </dialog>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-10 bg-base-200 text-base-content rounded mt-8">
+        <div>
+            <p>Copyright © 2025 - All rights reserved by StudyMate</p>
+        </div>
+    </footer>
+
+    <script>
+        // Check if user is logged in
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+
+        // Initialize tutorials
+        function initializeTutorials() {
+            loadTutorials();
+            setupEventListeners();
+        }
+
+        // Load tutorials
+        function loadTutorials(category = 'all') {
+            const tutorials = JSON.parse(localStorage.getItem('tutorials')) || [];
+            const filteredTutorials = filterTutorials(tutorials, category);
+            displayTutorials(filteredTutorials);
+        }
+
+        // Filter tutorials
+        function filterTutorials(tutorials, category) {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const subject = document.getElementById('subjectFilter').value;
+            const level = document.getElementById('levelFilter').value;
+
+            return tutorials.filter(tutorial => {
+                const matchesCategory = category === 'all' || 
+                    (category === 'free' && tutorial.type === 'free') ||
+                    (category === 'premium' && tutorial.type === 'premium') ||
+                    (category === 'my-tutorials' && tutorial.authorId === currentUser.id);
+                
+                const matchesSearch = tutorial.title.toLowerCase().includes(searchTerm) ||
+                    tutorial.description.toLowerCase().includes(searchTerm);
+                
+                const matchesSubject = !subject || tutorial.subject === subject;
+                const matchesLevel = !level || tutorial.level === level;
+
+                return matchesCategory && matchesSearch && matchesSubject && matchesLevel;
+            });
+        }
+
+        // Display tutorials
+        function displayTutorials(tutorials) {
+            const grid = document.getElementById('tutorialGrid');
+            grid.innerHTML = tutorials.map(tutorial => `
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h2 class="card-title">${tutorial.title}</h2>
+                        <p>${tutorial.description}</p>
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            <span class="badge badge-primary">${tutorial.subject}</span>
+                            <span class="badge badge-secondary">${tutorial.level}</span>
+                            <span class="badge ${tutorial.type === 'premium' ? 'badge-accent' : 'badge-info'}">${tutorial.type}</span>
+                        </div>
+                        <div class="card-actions justify-end mt-4">
+                            ${tutorial.type === 'premium' ? 
+                                `<button onclick="purchaseTutorial('${tutorial.id}')" class="btn btn-primary">Purchase ($${tutorial.price})</button>` :
+                                `<button onclick="startTutorial('${tutorial.id}')" class="btn btn-primary">Start Learning</button>`
+                            }
+                        </div>
+                    </div>
+                </div>
+            `).join('') || '<p class="col-span-full text-center">No tutorials found.</p>';
+        }
+
+        // Switch category
+        function switchCategory(category) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('tab-active'));
+            event.target.classList.add('tab-active');
+            loadTutorials(category);
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('searchInput').addEventListener('input', () => loadTutorials());
+            document.getElementById('subjectFilter').addEventListener('change', () => loadTutorials());
+            document.getElementById('levelFilter').addEventListener('change', () => loadTutorials());
+            document.getElementById('tutorialType').addEventListener('change', (e) => {
+                document.getElementById('priceField').style.display = e.target.value === 'premium' ? 'block' : 'none';
+            });
+        }
+
+        // Create tutorial
+        function createTutorial() {
+            document.getElementById('createTutorialModal').showModal();
+        }
+
+        // Close create modal
+        function closeCreateModal() {
+            document.getElementById('createTutorialModal').close();
+        }
+
+        // Handle tutorial creation
+        document.getElementById('createTutorialForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const tutorial = {
+                id: Date.now().toString(),
+                title: document.getElementById('tutorialTitle').value,
+                description: document.getElementById('tutorialDescription').value,
+                subject: document.getElementById('tutorialSubject').value,
+                level: document.getElementById('tutorialLevel').value,
+                type: document.getElementById('tutorialType').value,
+                price: document.getElementById('tutorialType').value === 'premium' ? 
+                    parseFloat(document.getElementById('tutorialPrice').value) : 0,
+                authorId: currentUser.id,
+                authorName: currentUser.name,
+                createdAt: new Date().toISOString()
+            };
+
+            const tutorials = JSON.parse(localStorage.getItem('tutorials')) || [];
+            tutorials.push(tutorial);
+            localStorage.setItem('tutorials', JSON.stringify(tutorials));
+
+            closeCreateModal();
+            loadTutorials();
+            alert('Tutorial created successfully!');
+        });
+
+        // Start tutorial
+        function startTutorial(tutorialId) {
+            // Implement tutorial viewing logic
+            alert('Tutorial viewing feature coming soon!');
+        }
+
+        // Purchase tutorial
+        function purchaseTutorial(tutorialId) {
+            // Implement tutorial purchase logic
+            alert('Tutorial purchase feature coming soon!');
+        }
+
+        // Initialize the page
+        initializeTutorials();
+    </script>
+</body>
+</html> 
